@@ -42,7 +42,7 @@ Category hues (fixed, both modes):
 ## Typography
 
 - Display / numbers: **Bricolage Grotesque** (expressive, bold) with `font-variant-numeric: tabular-nums`.
-- Body / UI: **Inter** (neutral grotesk).
+- Body / UI: **Hanken Grotesque** (neutral grotesk).
 - Scale: hero numbers clamp(2.75rem, 6vw, 4rem) [44–64px]; section headings clamp(1.5rem, 3vw, 2.25rem); body 0.9375–1rem (15–16px); labels 0.8125rem (13px) with tracking.
 - `text-wrap: balance` on h1–h3; `text-wrap: pretty` on long prose.
 
