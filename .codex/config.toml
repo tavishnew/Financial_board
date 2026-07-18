@@ -1,0 +1,76 @@
+#:schema https://developers.openai.com/codex/config-schema.json
+
+# ECC (Everything Claude Code) conventions for the Financial Board project.
+# The ecc@ecc plugin (278 skills + chrome-devtools MCP) is enabled globally and here.
+# Source: https://github.com/affaan-m/ECC  (plugin slug: ecc@ecc)
+#
+# Loads on session start. After this file is added, restart the Codex session so
+# the plugin skills and the agent roles below become active in this project.
+
+[plugins."ecc@ecc"]
+enabled = true
+
+# Multi-agent collaboration (Codex experimental flag).
+[features]
+multi_agent = true
+
+# Read-only child-agent roles. config_file points at the cloned marketplace so
+# they stay in sync with `codex plugin marketplace upgrade ecc`.
+[agents]
+max_threads = 6
+max_depth = 1
+
+[agents.explorer]
+description = "Read-only codebase explorer for gathering evidence before changes are proposed."
+config_file = "C:/Users/tavis/.codex/.tmp/marketplaces/ecc/.codex/agents/explorer.toml"
+
+[agents.reviewer]
+description = "PR reviewer focused on correctness, security, and missing tests."
+config_file = "C:/Users/tavis/.codex/.tmp/marketplaces/ecc/.codex/agents/reviewer.toml"
+
+[agents.docs_researcher]
+description = "Documentation specialist that verifies APIs, framework behavior, and release notes."
+config_file = "C:/Users/tavis/.codex/.tmp/marketplaces/ecc/.codex/agents/docs-researcher.toml"
+
+# Profiles (switch with `codex -p <name>`).
+[profiles.strict]
+approval_policy = "on-request"
+sandbox_mode = "read-only"
+web_search = "cached"
+
+[profiles.yolo]
+approval_policy = "never"
+sandbox_mode = "workspace-write"
+web_search = "live"
+
+# Lean MCP baseline (ECC convention). Each launches on demand via npx and
+# fetches its package on first run (needs network the first time).
+[mcp_servers.github]
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-github"]
+startup_timeout_sec = 30
+
+[mcp_servers.context7]
+command = "npx"
+args = ["-y", "@upstash/context7-mcp@latest"]
+startup_timeout_sec = 30
+
+[mcp_servers.exa]
+command = "npx"
+args = ["-y", "mcp-remote", "https://mcp.exa.ai/mcp"]
+startup_timeout_sec = 30
+
+[mcp_servers.memory]
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-memory"]
+startup_timeout_sec = 30
+
+[mcp_servers.playwright]
+command = "npx"
+args = ["-y", "@playwright/mcp@latest", "--extension"]
+startup_timeout_sec = 30
+
+[mcp_servers.sequential-thinking]
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+startup_timeout_sec = 30
