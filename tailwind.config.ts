@@ -21,6 +21,7 @@ const config: Config = {
         accent: "var(--accent)",
         positive: "var(--c-income)",
         danger: "var(--c-bills)",
+        onPrimary: "var(--on-primary)",
       },
       fontFamily: {
         display: ["var(--font-display)", "ui-sans-serif", "system-ui", "sans-serif"],
@@ -29,6 +30,7 @@ const config: Config = {
       borderRadius: {
         card: "20px",
         pill: "999px",
+        button: "12px",
       },
       boxShadow: {
         card: "var(--shadow-card)",

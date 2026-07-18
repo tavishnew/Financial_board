@@ -63,7 +63,7 @@ export default function SettingsPage() {
             </Field>
           </div>
           <div className="mt-3 flex items-center gap-3">
-            <span className="grid h-14 w-14 place-items-center rounded-2xl bg-primary text-xl font-bold text-white">
+            <span className="grid h-14 w-14 place-items-center rounded-2xl bg-primary text-xl font-bold text-on-primary">
               {name.charAt(0).toUpperCase()}
             </span>
             <Button variant="outline" size="sm">Change avatar</Button>
@@ -82,7 +82,7 @@ export default function SettingsPage() {
                     onClick={() => setTheme(t)}
                     className={cn(
                       "flex flex-1 items-center justify-center gap-2 rounded-xl py-2 text-sm font-semibold capitalize transition-colors",
-                      theme === t ? "bg-primary text-white" : "text-muted hover:text-ink"
+                      theme === t ? "bg-primary text-on-primary" : "text-muted hover:text-ink"
                     )}
                   >
                     {t === "dark" ? <Moon size={16} /> : <Sun size={16} />} {t}

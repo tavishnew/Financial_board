@@ -71,7 +71,7 @@ export default function OnboardingPage() {
               <div
                 className={cn(
                   "grid h-8 w-8 place-items-center rounded-full text-sm font-bold transition-colors",
-                  i <= step ? "bg-primary text-white" : "bg-surface-2 text-muted"
+                  i <= step ? "bg-primary text-on-primary" : "bg-surface-2 text-muted"
                 )}
               >
                 {i < step ? <Check size={16} /> : i + 1}

@@ -185,10 +185,10 @@ export default function LandingPage() {
 
       {/* CTA */}
       <section className="relative z-10 mx-auto max-w-6xl px-5 py-12">
-        <div className="card relative overflow-hidden bg-primary p-10 text-center text-white">
+        <div className="card relative overflow-hidden bg-primary p-10 text-center text-on-primary">
           <div aria-hidden className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-white/20 blur-2xl" />
           <h2 className="display text-[clamp(1.8rem,5vw,3rem)]">Stop guessing. Start seeing.</h2>
-          <p className="mx-auto mt-3 max-w-md text-white/80">
+          <p className="mx-auto mt-3 max-w-md text-on-primary opacity-80">
             Spin up your dashboard in a minute. It&apos;s free, it&apos;s bold, and it&apos;s yours.
           </p>
           <Link href="/signup" className="mt-6 inline-block">

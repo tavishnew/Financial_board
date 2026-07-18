@@ -40,7 +40,7 @@ export default function AnalyticsPage() {
                 onClick={() => setRange(r.months)}
                 className={cn(
                   "rounded-pill px-3 py-1.5 text-sm font-semibold transition-colors",
-                  range === r.months ? "bg-primary text-white" : "text-muted hover:text-ink"
+                  range === r.months ? "bg-primary text-on-primary" : "text-muted hover:text-ink"
                 )}
               >
                 {r.label}

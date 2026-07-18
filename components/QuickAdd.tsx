@@ -12,7 +12,7 @@ export function QuickAdd({ className = "" }: { className?: string }) {
       <button
         onClick={() => setOpen(true)}
         className={cn(
-          "inline-flex h-11 items-center gap-2 rounded-2xl bg-primary px-5 text-sm font-semibold text-white shadow-[var(--shadow-glow)] transition-all hover:-translate-y-0.5 hover:bg-primary-press",
+          "inline-flex h-11 items-center gap-2 rounded-button bg-primary px-5 text-sm font-semibold text-on-primary shadow-[var(--shadow-glow)] transition-all hover:-translate-y-0.5 hover:bg-primary-press",
           className
         )}
       >

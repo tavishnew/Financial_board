@@ -169,7 +169,7 @@ export default function TransactionsPage() {
               onClick={() => setType(t)}
               className={cn(
                 "rounded-pill px-3 py-1.5 text-sm font-semibold capitalize transition-colors",
-                type === t ? "bg-primary text-white" : "bg-surface-2 text-muted hover:text-ink"
+                type === t ? "bg-primary text-on-primary" : "bg-surface-2 text-muted hover:text-ink"
               )}
             >
               {t}
@@ -234,7 +234,7 @@ export default function TransactionsPage() {
                 aria-label="Select transaction"
                 className={cn(
                   "grid h-5 w-5 shrink-0 place-items-center rounded-md border transition-colors",
-                  selected.has(t.id) ? "border-primary bg-primary text-white" : "border-line"
+                  selected.has(t.id) ? "border-primary bg-primary text-on-primary" : "border-line"
                 )}
               >
                 {selected.has(t.id) && <Check size={13} />}
