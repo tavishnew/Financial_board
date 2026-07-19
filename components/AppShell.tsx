@@ -8,6 +8,7 @@ import {
   Receipt,
   PieChart,
   LineChart,
+  FileText,
   Wallet,
   Target,
   RefreshCw,
@@ -27,6 +28,7 @@ import { cn } from "@/lib/cn";
 
 const NAV = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/reports", label: "Reports", icon: FileText },
   { href: "/transactions", label: "Transactions", icon: Receipt },
   { href: "/budgets", label: "Budgets", icon: PieChart },
   { href: "/analytics", label: "Analytics", icon: LineChart },
