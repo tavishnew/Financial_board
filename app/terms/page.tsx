@@ -2,7 +2,7 @@
 import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
-export const metadata = { title: "Terms of Service — Finboard" };
+export const metadata = { title: "Terms of Service — MoneyTrail" };
 
 export default function TermsPage() {
   return (
@@ -20,11 +20,11 @@ export default function TermsPage() {
         <div className="mt-8 space-y-6 text-[0.95rem] leading-relaxed text-muted">
           <section>
             <h2 className="text-lg font-bold text-ink">Acceptance</h2>
-            <p>By using Finboard you agree to these terms. If you don&apos;t agree, please don&apos;t use the service.</p>
+            <p>By using MoneyTrail you agree to these terms. If you don&apos;t agree, please don&apos;t use the service.</p>
           </section>
           <section>
             <h2 className="text-lg font-bold text-ink">Not financial advice</h2>
-            <p>Finboard is a tracking tool. Nothing here is financial, tax or investment advice.</p>
+            <p>MoneyTrail is a tracking tool. Nothing here is financial, tax or investment advice.</p>
           </section>
           <section>
             <h2 className="text-lg font-bold text-ink">Your responsibility</h2>
@@ -39,4 +39,5 @@ export default function TermsPage() {
     </div>
   );
 }
+
 

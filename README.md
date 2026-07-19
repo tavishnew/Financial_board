@@ -1,4 +1,4 @@
-# Finboard — maximalist personal finance tracker
+﻿# MoneyTrail — maximalist personal finance tracker
 
 A Next.js 14 (App Router) + TypeScript + Tailwind finance tracker with a bold bento-grid
 dashboard. Built from the product/design specs in this repo (`PRODUCT.md`, `DESIGN.md`).
@@ -11,7 +11,7 @@ dashboard. Built from the product/design specs in this repo (`PRODUCT.md`, `DESI
 - Passwords: bcryptjs · validation: zod
 
 ## Quick start (local, zero-config)
-No external database required. Local dev uses an embedded PGlite file (`.finboard-data`).
+No external database required. Local dev uses an embedded PGlite file (`.MoneyTrail-data`).
 ```bash
 npm install
 npm run dev        # runs setup-db, then serves on http://localhost:3100
@@ -23,17 +23,17 @@ first time the database is empty:
 
 Open http://localhost:3100, log in, and the UI hydrates from the real `/api/*` routes.
 
-To wipe and reseed: delete `.finboard-data` (gitignored) and restart `npm run dev`,
+To wipe and reseed: delete `.MoneyTrail-data` (gitignored) and restart `npm run dev`,
 or run `npm run db:setup`.
 
 ## Production (Neon / any Postgres)
 1. Set `DATABASE_URL` to your Postgres connection string in `.env.local`:
    ```
-   DATABASE_URL="postgresql://user:password@ep-xxx.neon.tech/finboard?sslmode=require"
+   DATABASE_URL="postgresql://user:password@ep-xxx.neon.tech/MoneyTrail?sslmode=require"
    ```
-   When `DATABASE_URL` starts with `postgresql://` (or `postgres://`), Finboard uses a
+   When `DATABASE_URL` starts with `postgresql://` (or `postgres://`), MoneyTrail uses a
    standard Prisma client against that server. Any other value (including empty/unset) is
-   treated as a local PGlite data-directory path (default `./.finboard-data`).
+   treated as a local PGlite data-directory path (default `./.MoneyTrail-data`).
 2. Set `NEXTAUTH_SECRET` (`openssl rand -base64 32`) and `NEXTAUTH_URL`.
 3. Generate the Prisma client and create the tables:
    ```bash
@@ -69,3 +69,4 @@ with full light mode. Category hues are fixed and reused across charts, tags, an
 ## Scripts
 `npm run dev` · `npm run build` · `npm run start` · `npm run typecheck` ·
 `npm run test` · `npm run db:generate` · `npm run db:setup` (create schema + seed)
+

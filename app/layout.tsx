@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider, themeInitScript } from "@/components/ThemeProvider";
 import { Providers } from "@/components/Providers";
 
 export const metadata: Metadata = {
-  title: "Finboard — your money, in bold",
+  title: "MoneyTrail — your money, in bold",
   description:
     "A maximalist bento-grid personal finance tracker. Track income, expenses, budgets and goals with clarity.",
 };
@@ -27,3 +27,4 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </html>
   );
 }
+

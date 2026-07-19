@@ -10,8 +10,9 @@ export function Logo({ size = 28, className }: { size?: number; className?: stri
         <path d="M10 20C12 15 20 15 22 12" stroke="var(--primary)" strokeWidth="3" strokeLinecap="round" />
         <circle cx="22" cy="12" r="3" fill="var(--primary)" />
       </svg>
-      <span className="display text-lg font-extrabold tracking-tight">Finboard</span>
+      <span className="display text-lg font-extrabold tracking-tight">MoneyTrail</span>
     </span>
   );
 }
+
 

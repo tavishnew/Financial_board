@@ -99,7 +99,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="pt-4 border-t border-white/10 mt-auto">
           <div className="flex items-center gap-2 px-2 text-slate-400 text-xs font-semibold">
             <Logo size={20} className="text-[#2563EB]" />
-            <span>Finboard v1.0</span>
+            <span>MoneyTrail v1.0</span>
           </div>
         </div>
       </aside>
@@ -231,5 +231,6 @@ export function AppShell({ children }: { children: ReactNode }) {
     </div>
   );
 }
+
 
 

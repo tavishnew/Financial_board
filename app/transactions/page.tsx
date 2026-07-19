@@ -123,7 +123,7 @@ export default function TransactionsPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "Finboard-ledger.csv";
+    a.download = "MoneyTrail-ledger.csv";
     a.click();
     URL.revokeObjectURL(url);
     toast(`Exported ${filtered.length} transactions successfully`, "success");
@@ -460,4 +460,5 @@ export default function TransactionsPage() {
     </AppShell>
   );
 }
+
 

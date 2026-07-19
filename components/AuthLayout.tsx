@@ -42,7 +42,7 @@ export function AuthLayout({
           </ul>
         </div>
         <div className="text-sm text-muted">
-          © {new Date().getFullYear()} Finboard
+          © {new Date().getFullYear()} MoneyTrail
         </div>
       </div>
 
@@ -69,4 +69,5 @@ export function AuthLayout({
     </div>
   );
 }
+
 

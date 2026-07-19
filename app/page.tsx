@@ -80,7 +80,7 @@ export default function LandingPage() {
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.12 }}
           className="mx-auto mt-5 max-w-xl text-pretty text-lg text-muted"
         >
-          Finboard turns income, expenses, and budgets into a beautiful,
+          MoneyTrail turns income, expenses, and budgets into a beautiful,
           editorial personal finance workspace that keeps your story simple and clear.
         </motion.p>
         <motion.div
@@ -207,10 +207,11 @@ export default function LandingPage() {
             <Link href="/terms" className="hover:text-ink">Terms</Link>
             <Link href="/login" className="hover:text-ink">Login</Link>
           </div>
-          <span>© {new Date().getFullYear()} Finboard</span>
+          <span>© {new Date().getFullYear()} MoneyTrail</span>
         </div>
       </footer>
     </div>
   );
 }
+
 

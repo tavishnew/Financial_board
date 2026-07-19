@@ -32,7 +32,7 @@ export default function SettingsPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "Finboard-data.json";
+    a.download = "MoneyTrail-data.json";
     a.click();
     URL.revokeObjectURL(url);
     toast("Exported all workspace data successfully", "success");
@@ -266,7 +266,7 @@ export default function SettingsPage() {
       <ConfirmDialog
         open={confirmDelete}
         title="Permanently erase account data?"
-        message="This is a sandbox workspace simulation. In a live production environment, this would immediately and permanently wipe your personal Finboard database records. Proceed?"
+        message="This is a sandbox workspace simulation. In a live production environment, this would immediately and permanently wipe your personal MoneyTrail database records. Proceed?"
         confirmLabel="Erase Data"
         onConfirm={() => { setConfirmDelete(false); toast("Account data deletion simulation triggered.", "info"); }}
         onCancel={() => setConfirmDelete(false)}
@@ -293,4 +293,5 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
     </label>
   );
 }
+
 

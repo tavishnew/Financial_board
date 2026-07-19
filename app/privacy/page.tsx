@@ -2,7 +2,7 @@
 import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
-export const metadata = { title: "Privacy Policy — Finboard" };
+export const metadata = { title: "Privacy Policy — MoneyTrail" };
 
 export default function PrivacyPage() {
   return (
@@ -21,7 +21,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-lg font-bold text-ink">What we collect</h2>
             <p>
-              Finboard stores the accounts, transactions, budgets and goals you
+              MoneyTrail stores the accounts, transactions, budgets and goals you
               create, tied to your account. We do not sell your financial data,
               ever.
             </p>
@@ -42,11 +42,12 @@ export default function PrivacyPage() {
           </section>
           <section>
             <h2 className="text-lg font-bold text-ink">Contact</h2>
-            <p>Questions? Reach us at privacy@Finboard.app.</p>
+            <p>Questions? Reach us at privacy@MoneyTrail.app.</p>
           </section>
         </div>
       </main>
     </div>
   );
 }
+
 
