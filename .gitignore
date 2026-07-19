@@ -31,3 +31,8 @@ next-env.d.ts
 # editor
 .vscode/
 .idea/
+
+# Local PGlite dev database
+.finboard-data
+# Local npm cache
+.npmcache
