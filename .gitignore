@@ -36,3 +36,6 @@ next-env.d.ts
 .finboard-data
 # Local npm cache
 .npmcache
+
+# Vitest isolated database
+.test-db
