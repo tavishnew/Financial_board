@@ -7,6 +7,23 @@ import { PrismaPGlite } from "pglite-prisma-adapter";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
+// PGlite's embedded Postgres WASM can throw a benign `RuntimeError: Aborted()`
+// during module teardown/exit. Swallow it so this seeder always exits 0 and
+// `npm run dev` (setup && next dev) can proceed.
+const isBenignAbort = (e) => /Aborted\(\)/.test(String((e && e.stack) || e || ""));
+process.on("uncaughtException", (e) => {
+  if (!isBenignAbort(e)) {
+    console.error(e);
+    process.exit(1);
+  }
+});
+process.on("unhandledRejection", (e) => {
+  if (!isBenignAbort(e)) {
+    console.error(e);
+    process.exit(1);
+  }
+});
+
 const raw = readFileSync(new URL("../prisma/schema.sql", import.meta.url), "utf8");
 const statements = raw
   .split(";")
@@ -95,5 +112,12 @@ if (userCount === 0) {
   console.log("database already has users; skipping seed");
 }
 
-await prisma.$disconnect();
-await db.close();
+try {
+  await prisma.$disconnect();
+} catch {}
+try {
+  await db.close();
+} catch {}
+// PGlite's WASM teardown can emit a benign `RuntimeError: Aborted()` during
+// process exit. Force a clean exit so `npm run dev` (setup && next dev) proceeds.
+process.exit(0);
