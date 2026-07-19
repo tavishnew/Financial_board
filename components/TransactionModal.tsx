@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { X, Wallet } from "lucide-react";
 import { CATEGORY_META } from "@/lib/categories";
 import { useStore } from "@/lib/store";
@@ -22,6 +22,7 @@ export function TransactionModal({
 }) {
   const { categories, accounts, addTransaction, user } = useStore();
   const toast = useToast();
+  const reduce = useReducedMotion();
 
   const [type, setType] = useState<TxnType>(defaultType);
   const [amount, setAmount] = useState("");
@@ -83,10 +84,10 @@ export function TransactionModal({
         >
           <motion.div
             className="card w-full max-w-md p-6"
-            initial={{ opacity: 0, y: 20, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.97 }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            initial={reduce ? { opacity: 0 } : { opacity: 0, y: 20, scale: 0.97 }}
+            animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }}
+            exit={reduce ? { opacity: 0 } : { opacity: 0, y: 20, scale: 0.97, transition: { duration: 0.18, ease: [0.22, 1, 0.36, 1] } }}
+            transition={reduce ? { duration: 0.18 } : { duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             onClick={(e) => e.stopPropagation()}
             role="dialog"
             aria-modal="true"
@@ -141,7 +142,7 @@ export function TransactionModal({
                         key={c.id}
                         onClick={() => setCategoryKey(c.key)}
                         className={cn(
-                          "flex flex-col items-center gap-1 rounded-2xl border p-2 text-xs font-semibold transition-all",
+                          "flex flex-col items-center gap-1 rounded-2xl border p-2 text-xs font-semibold transition-colors",
                           active ? "border-primary" : "border-line hover:border-primary/50"
                         )}
                         style={active ? { background: `color-mix(in oklch, ${meta.hue} 14%, transparent)`, color: meta.hue } : undefined}

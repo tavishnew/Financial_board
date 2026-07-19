@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useMemo } from "react";
 import { Download, Sparkles, TrendingUp, Calendar, ChevronRight, Calculator } from "lucide-react";
@@ -46,7 +46,7 @@ export default function AnalyticsPage() {
                 key={r.months}
                 onClick={() => setRange(r.months)}
                 className={cn(
-                  "rounded-pill px-3 py-1.5 text-xs font-bold transition-all",
+                  "rounded-pill px-3 py-1.5 text-xs font-bold transition-colors",
                   range === r.months ? "bg-primary text-white" : "text-muted hover:text-ink"
                 )}
               >
@@ -80,7 +80,7 @@ export default function AnalyticsPage() {
 
         <div className="card p-5 bg-white">
           <div className="text-xs font-bold text-muted uppercase tracking-wider">Saved (This Month)</div>
-          <div className="display tabnum mt-1.5 text-2xl text-[#2563EB] font-bold">
+          <div className="display tabnum mt-1.5 text-2xl text-[#0E7C5B] font-bold">
             {formatMoney(totals.net, user.currency)}
           </div>
           <div className="text-xs text-muted mt-2">Added directly to your cumulative Net Worth</div>
@@ -88,9 +88,9 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Intelligent Narrative Story & Forecast card */}
-      <div className="card p-6 bg-[#2563EB]/5 border border-[#2563EB]/15 mb-6">
+      <div className="card p-6 bg-[#0E7C5B]/5 border border-[#0E7C5B]/15 mb-6">
         <div className="flex items-start gap-4">
-          <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[#2563EB]/10 text-[#2563EB] shrink-0">
+          <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[#0E7C5B]/10 text-[#0E7C5B] shrink-0">
             <Sparkles size={20} />
           </span>
           <div>

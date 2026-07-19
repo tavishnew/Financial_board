@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Button } from "./Button";
 
 export function ConfirmDialog({
@@ -29,6 +29,7 @@ export function ConfirmDialog({
   }, [open, onCancel]);
 
   if (!open || typeof document === "undefined") return null;
+  const reduce = useReducedMotion();
 
   return createPortal(
     <AnimatePresence>
@@ -42,10 +43,10 @@ export function ConfirmDialog({
         >
           <motion.div
             className="card w-full max-w-sm p-6"
-            initial={{ opacity: 0, y: 20, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.97 }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            initial={reduce ? { opacity: 0 } : { opacity: 0, y: 20, scale: 0.97 }}
+            animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }}
+            exit={reduce ? { opacity: 0 } : { opacity: 0, y: 20, scale: 0.97, transition: { duration: 0.18, ease: [0.22, 1, 0.36, 1] } }}
+            transition={reduce ? { duration: 0.18 } : { duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             onClick={(e) => e.stopPropagation()}
             role="alertdialog"
             aria-modal="true"

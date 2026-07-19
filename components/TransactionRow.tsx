@@ -6,10 +6,13 @@ import { CATEGORY_META } from "@/lib/categories";
 import { formatMoney, relativeDay } from "@/lib/format";
 import type { Transaction } from "@/lib/types";
 import { cn } from "@/lib/cn";
+import { DEMO_CATEGORIES } from "@/lib/demo";
 
 export function TransactionRow({ txn }: { txn: Transaction }) {
   const { categories, accounts, user } = useStore();
-  const cat = txn.categoryId ? categories.find((c) => c.id === txn.categoryId) : null;
+  const cat = txn.categoryId
+    ? categories.find((c) => c.id === txn.categoryId) ?? DEMO_CATEGORIES.find((c) => c.id === txn.categoryId)
+    : null;
   const meta = cat ? CATEGORY_META[cat.key] : null;
   const Icon = meta?.icon ?? Wallet;
   const hue = meta?.hue ?? "var(--c-income)";

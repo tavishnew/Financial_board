@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useMemo } from "react";
 import { Plus, Pencil, Sparkles, Check, AlertTriangle, ShieldCheck, TrendingUp } from "lucide-react";
@@ -89,9 +89,9 @@ export default function BudgetsPage() {
       </div>
 
       {/* Recommendations & insights card */}
-      <div className="card p-5 bg-[#2563EB]/5 border border-[#2563EB]/15 mb-6">
+      <div className="card p-5 bg-[#0E7C5B]/5 border border-[#0E7C5B]/15 mb-6">
         <div className="flex items-start gap-3">
-          <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#2563EB]/10 text-[#2563EB] shrink-0">
+          <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#0E7C5B]/10 text-[#0E7C5B] shrink-0">
             <Sparkles size={18} />
           </span>
           <div>
@@ -148,7 +148,7 @@ export default function BudgetsPage() {
           const meta = b.category ? CATEGORY_META[b.category.key] : null;
           const Icon = meta?.icon ?? Plus;
           return (
-            <div key={b.budget.id} className="card p-5 bg-white hover:border-[#2563EB]/40 transition-all flex flex-col justify-between">
+            <div key={b.budget.id} className="card p-5 bg-white hover:border-[#0E7C5B]/40 flex flex-col justify-between">
               <div>
                 <div className="flex items-center gap-3">
                   <span

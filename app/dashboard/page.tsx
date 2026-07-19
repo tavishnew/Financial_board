@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { ArrowUpRight, TrendingDown, Trophy, Sparkles, AlertCircle, Calendar, CreditCard, ChevronRight } from "lucide-react";
@@ -20,15 +20,22 @@ import {
 } from "@/lib/selectors";
 import { formatMoney, pct } from "@/lib/format";
 import { CATEGORY_META } from "@/lib/categories";
+import { DEMO_TRANSACTIONS, DEMO_ACCOUNTS, DEMO_CATEGORIES, DEMO_BUDGETS, DEMO_GOALS } from "@/lib/demo";
 
 export default function DashboardPage() {
   const { transactions, accounts, categories, budgets, goals, user } = useStore();
-  const nw = netWorth(accounts);
-  const totals = monthTotals(transactions);
-  const top = topCategory(transactions, categories);
+  const hasData = transactions.length > 0;
+  const dTxns = hasData ? transactions : DEMO_TRANSACTIONS;
+  const dAccounts = accounts.length ? accounts : DEMO_ACCOUNTS;
+  const dCategories = categories.length ? categories : DEMO_CATEGORIES;
+  const dBudgets = budgets.length ? budgets : DEMO_BUDGETS;
+  const dGoals = goals.length ? goals : DEMO_GOALS;
+  const nw = netWorth(dAccounts);
+  const totals = monthTotals(dTxns);
+  const top = topCategory(dTxns, dCategories);
   const topMeta = top ? CATEGORY_META[top.category.key] : null;
-  const recent = recentTransactions(transactions, 5);
-  const budgetsProgress = budgetProgress(transactions, budgets, categories).slice(0, 3);
+  const recent = recentTransactions(dTxns, 5);
+  const budgetsProgress = budgetProgress(dTxns, dBudgets, dCategories).slice(0, 3);
   const hour = new Date().getHours();
   const greet = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
 
@@ -41,7 +48,7 @@ export default function DashboardPage() {
       {/* Welcome Hero / Editorial Header */}
       <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-line pb-6">
         <div>
-          <span className="kicker text-[#2563EB] font-bold">{greet}, {user.name}</span>
+          <span className="kicker text-[#0E7C5B] font-bold">{greet}, {user.name}</span>
           <h1 className="display text-4xl mt-1 tracking-tight text-ink font-extrabold">Your financial story</h1>
           <p className="text-muted text-sm mt-1">Keep moving toward your goals · Here is where your money is going this month.</p>
         </div>
@@ -60,7 +67,7 @@ export default function DashboardPage() {
         <div className="grid gap-6 md:grid-cols-12">
           {/* Welcome Hero Card / Net Worth */}
           <div className="md:col-span-8 card p-6 bg-white relative overflow-hidden flex flex-col justify-between min-h-[300px]">
-            <div className="absolute right-0 top-0 h-40 w-40 rounded-full bg-[#2563EB]/5 blur-2xl pointer-events-none" />
+            <div className="absolute right-0 top-0 h-40 w-40 rounded-full bg-[#0E7C5B]/5 blur-2xl pointer-events-none" />
             <div>
               <div className="flex items-center justify-between">
                 <span className="kicker text-muted">Net Worth Overview</span>
@@ -92,7 +99,7 @@ export default function DashboardPage() {
                     <TrendingDown size={13} className="text-[#EF4444]" /> Spent
                   </div>
                   <div className="display tabnum text-2xl text-ink font-bold mt-0.5">
-                    {formatMoney(totals.expense, user.currency)}
+                    <CountUp value={totals.expense} format={(n) => formatMoney(n, user.currency)} />
                   </div>
                 </div>
                 
@@ -103,7 +110,7 @@ export default function DashboardPage() {
                     <ArrowUpRight size={13} className="text-[#22C55E]" /> Earned
                   </div>
                   <div className="display tabnum text-2xl text-[#22C55E] font-bold mt-0.5">
-                    {formatMoney(totals.income, user.currency)}
+                    <CountUp value={totals.income} format={(n) => formatMoney(n, user.currency)} />
                   </div>
                 </div>
               </div>
@@ -129,9 +136,9 @@ export default function DashboardPage() {
         </div>
 
         {/* Row 2: Financial Health Insight Banner */}
-        <div className="card p-5 bg-[#2563EB]/5 border border-[#2563EB]/15 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="card p-5 bg-[#0E7C5B]/5 border border-[#0E7C5B]/15 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-start gap-3">
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#2563EB]/10 text-[#2563EB] shrink-0">
+            <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#0E7C5B]/10 text-[#0E7C5B] shrink-0">
               <Sparkles size={18} />
             </span>
             <div>
@@ -144,7 +151,7 @@ export default function DashboardPage() {
             </div>
           </div>
           <Link href="/analytics">
-            <button className="text-xs font-bold text-[#2563EB] hover:underline flex items-center gap-0.5 shrink-0">
+            <button className="text-xs font-bold text-[#0E7C5B] hover:underline flex items-center gap-0.5 shrink-0">
               View Analytics <ChevronRight size={14} />
             </button>
           </Link>
@@ -199,7 +206,7 @@ export default function DashboardPage() {
               </div>
               
               <div className="space-y-4">
-                {goals.slice(0, 2).map((g) => {
+              {dGoals.slice(0, 2).map((g) => {
                   const p = pct(g.currentAmount, g.targetAmount);
                   return (
                     <div key={g.id}>

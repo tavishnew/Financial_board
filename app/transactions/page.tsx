@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useMemo, useRef, useState } from "react";
 import { Search, Download, Upload, Trash2, X, Check, Calendar, ArrowRightLeft, TrendingDown, ArrowUpRight, HelpCircle, ChevronDown, ChevronUp } from "lucide-react";
@@ -242,7 +242,7 @@ export default function TransactionsPage() {
                 key={t}
                 onClick={() => setType(t)}
                 className={cn(
-                  "rounded-pill px-3 py-1 text-xs font-bold capitalize transition-all",
+                  "rounded-pill px-3 py-1 text-xs font-bold capitalize transition-colors",
                   type === t ? "bg-primary text-white" : "text-muted hover:text-ink"
                 )}
               >
@@ -283,7 +283,7 @@ export default function TransactionsPage() {
 
       {/* Bulk actions panel */}
       {selected.size > 0 && (
-        <div className="mb-4 flex items-center justify-between rounded-xl border border-[#2563EB]/25 bg-[#2563EB]/5 px-4 py-3 shadow-sm animate-pulse">
+        <div className="mb-4 flex items-center justify-between rounded-xl border border-[#0E7C5B]/25 bg-[#0E7C5B]/5 px-4 py-3 shadow-sm animate-pulse">
           <span className="text-xs font-bold text-ink">{selected.size} items selected</span>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={() => setSelected(new Set())} className="h-8 text-xs font-bold">
@@ -301,7 +301,7 @@ export default function TransactionsPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse table-fixed">
             {/* Sticky Table Headers */}
-            <thead className="bg-[#F8F7F4] border-b border-line text-xs font-bold uppercase text-muted tracking-wider sticky top-0 z-10">
+            <thead className="bg-[#FBF7F0] border-b border-line text-xs font-bold uppercase text-muted tracking-wider sticky top-0 z-10">
               <tr>
                 <th className="w-12 py-3.5 pl-4 text-center">
                   <button

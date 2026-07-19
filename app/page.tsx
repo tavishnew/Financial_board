@@ -14,6 +14,7 @@ import { useStore } from "@/lib/store";
 import { netWorth, monthTotals, topCategory } from "@/lib/selectors";
 import { formatMoney } from "@/lib/format";
 import { CATEGORY_META } from "@/lib/categories";
+import { DEMO_TRANSACTIONS, DEMO_ACCOUNTS, DEMO_CATEGORIES } from "@/lib/demo";
 
 const FEATURES = [
   { icon: Wallet, title: "Every account, one net worth", body: "Bank, card, cash and wallet — rolled into one honest number you can actually trust." },
@@ -26,16 +27,20 @@ const FEATURES = [
 
 export default function LandingPage() {
   const { transactions, accounts, categories, budgets, user } = useStore();
-  const nw = netWorth(accounts);
-  const totals = monthTotals(transactions);
-  const top = topCategory(transactions, categories);
+  const hasData = transactions.length > 0;
+  const dTxns = hasData ? transactions : DEMO_TRANSACTIONS;
+  const dAccounts = accounts.length ? accounts : DEMO_ACCOUNTS;
+  const dCategories = categories.length ? categories : DEMO_CATEGORIES;
+  const nw = netWorth(dAccounts);
+  const totals = monthTotals(dTxns);
+  const top = topCategory(dTxns, dCategories);
   const topMeta = top ? CATEGORY_META[top.category.key] : null;
 
   return (
     <div className="grain relative overflow-hidden">
       {/* Decorative blobs (landing only) */}
-      <div aria-hidden className="pointer-events-none absolute -left-32 -top-24 h-96 w-96 rounded-full bg-primary/30 blur-[120px]" />
-      <div aria-hidden className="pointer-events-none absolute -right-24 top-40 h-80 w-80 rounded-full bg-accent/25 blur-[120px]" />
+      <div aria-hidden className="animate-drift pointer-events-none absolute -left-32 -top-24 h-96 w-96 rounded-full bg-primary/30 blur-[120px]" />
+      <div aria-hidden className="animate-drift-alt pointer-events-none absolute -right-24 top-40 h-80 w-80 rounded-full bg-accent/25 blur-[120px]" />
 
       {/* Nav */}
       <header className="relative z-10 mx-auto flex max-w-6xl items-center justify-between px-5 py-5">
@@ -72,7 +77,7 @@ export default function LandingPage() {
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.05 }}
           className="display text-balance mx-auto max-w-4xl text-[clamp(2.75rem,8vw,5.5rem)] text-ink"
         >
-          Your money, <span style={{ color: "var(--primary)" }}>in bold</span>.
+          Your money, <span style={{ color: "var(--primary)" }}>finally legible</span>.
         </motion.h1>
         <motion.p
           initial={{ opacity: 0, y: 20 }}
@@ -123,13 +128,13 @@ export default function LandingPage() {
               <div>
                 <div className="text-sm text-muted">Spent</div>
                 <div className="display tabnum text-2xl text-ink">
-                  {formatMoney(totals.expense, user.currency)}
+                  <CountUp value={totals.expense} format={(n) => formatMoney(n, user.currency)} />
                 </div>
               </div>
               <div>
                 <div className="text-sm text-muted">Earned</div>
                 <div className="display tabnum text-2xl text-[color:var(--c-income)]">
-                  {formatMoney(totals.income, user.currency)}
+                  <CountUp value={totals.income} format={(n) => formatMoney(n, user.currency)} />
                 </div>
               </div>
               {top && topMeta && (
@@ -171,12 +176,12 @@ export default function LandingPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: (i % 3) * 0.06 }}
-              className="card p-5"
+              className="card p-5 group"
             >
-              <span className="grid h-11 w-11 place-items-center rounded-2xl bg-primary/15 text-primary">
+              <span className="grid h-11 w-11 place-items-center rounded-2xl bg-primary/15 text-primary transition-transform duration-300 ease-out-quint group-hover:scale-110 group-hover:-rotate-3">
                 <f.icon size={22} strokeWidth={2.3} />
               </span>
-              <h3 className="mt-4 text-lg font-bold text-ink">{f.title}</h3>
+              <h3 className="mt-4 text-lg font-bold text-ink transition-colors group-hover:text-primary">{f.title}</h3>
               <p className="mt-1.5 text-sm text-muted">{f.body}</p>
             </motion.div>
           ))}

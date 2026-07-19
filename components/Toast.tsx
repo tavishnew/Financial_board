@@ -7,7 +7,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { CheckCircle2, AlertTriangle, Info, X } from "lucide-react";
 import { cn } from "@/lib/cn";
 
@@ -29,6 +29,8 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), 3600);
   }, []);
 
+  const reduce = useReducedMotion();
+
   return (
     <ToastContext.Provider value={push}>
       {children}
@@ -38,9 +40,9 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             <motion.div
               key={t.id}
               layout
-              initial={{ opacity: 0, x: 40, scale: 0.95 }}
-              animate={{ opacity: 1, x: 0, scale: 1 }}
-              exit={{ opacity: 0, x: 40, scale: 0.95 }}
+              initial={reduce ? { opacity: 0 } : { opacity: 0, x: 40, scale: 0.95 }}
+              animate={reduce ? { opacity: 1 } : { opacity: 1, x: 0, scale: 1 }}
+              exit={reduce ? { opacity: 0 } : { opacity: 0, x: 40, scale: 0.95, transition: { duration: 0.18, ease: [0.22, 1, 0.36, 1] } }}
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
               className="pointer-events-auto flex items-center gap-3 rounded-2xl border border-line bg-surface px-4 py-3 shadow-card"
             >

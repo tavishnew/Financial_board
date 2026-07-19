@@ -4,11 +4,13 @@ import { useMemo } from "react";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, YAxis } from "recharts";
 import { useStore } from "@/lib/store";
 import { dailyTrend } from "@/lib/selectors";
+import { DEMO_TRANSACTIONS } from "@/lib/demo";
 import { ChartTooltip } from "./ChartTooltip";
 
 export function MiniTrend({ days = 14 }: { days?: number }) {
   const { transactions } = useStore();
-  const data = useMemo(() => dailyTrend(transactions, days), [transactions, days]);
+  const txns = transactions.length ? transactions : DEMO_TRANSACTIONS;
+  const data = useMemo(() => dailyTrend(txns, days), [txns, days]);
 
   return (
     <ResponsiveContainer width="100%" height={120}>

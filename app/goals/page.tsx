@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { Plus, Target, Trash2, CalendarClock, Trophy, Sparkles, Milestone, CheckCircle } from "lucide-react";
@@ -50,9 +50,9 @@ export default function GoalsPage() {
       </div>
 
       {/* Goal insights & recommendations card */}
-      <div className="card p-5 bg-[#2563EB]/5 border border-[#2563EB]/15 mb-6">
+      <div className="card p-5 bg-[#0E7C5B]/5 border border-[#0E7C5B]/15 mb-6">
         <div className="flex items-start gap-3">
-          <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#2563EB]/10 text-[#2563EB] shrink-0">
+          <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#0E7C5B]/10 text-[#0E7C5B] shrink-0">
             <Trophy size={18} />
           </span>
           <div>
@@ -137,7 +137,7 @@ export default function GoalsPage() {
             : "Milestone: Just started";
 
           return (
-            <div key={g.id} className="card p-5 bg-white hover:border-[#2563EB]/40 transition-all flex flex-col justify-between min-h-[250px]">
+            <div key={g.id} className="card p-5 bg-white hover:border-[#0E7C5B]/40 flex flex-col justify-between min-h-[250px]">
               <div>
                 <div className="flex items-start justify-between">
                   <span className={cn(

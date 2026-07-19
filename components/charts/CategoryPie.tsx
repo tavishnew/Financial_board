@@ -7,13 +7,16 @@ import { CATEGORY_META } from "@/lib/categories";
 import { categorySpend } from "@/lib/selectors";
 import { formatCompact, formatMoney } from "@/lib/format";
 import { ChartTooltip } from "./ChartTooltip";
+import { DEMO_TRANSACTIONS, DEMO_CATEGORIES } from "@/lib/demo";
 
 export function CategoryPie({ monthsAgo = 0 }: { monthsAgo?: number }) {
   const { transactions, categories, user } = useStore();
+  const txns = transactions.length ? transactions : DEMO_TRANSACTIONS;
+  const cats = categories.length ? categories : DEMO_CATEGORIES;
 
   const data = useMemo(() => {
-    const spend = categorySpend(transactions, monthsAgo);
-    return categories
+    const spend = categorySpend(txns, monthsAgo);
+    return cats
       .map((c) => ({
         key: c.id,
         name: c.name,
@@ -22,7 +25,7 @@ export function CategoryPie({ monthsAgo = 0 }: { monthsAgo?: number }) {
       }))
       .filter((d) => d.value > 0)
       .sort((a, b) => b.value - a.value);
-  }, [transactions, categories, monthsAgo]);
+  }, [txns, cats, monthsAgo]);
 
   const total = data.reduce((s, d) => s + d.value, 0);
 

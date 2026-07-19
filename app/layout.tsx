@@ -2,9 +2,10 @@
 import "./globals.css";
 import { ThemeProvider, themeInitScript } from "@/components/ThemeProvider";
 import { Providers } from "@/components/Providers";
+import ClickSpark from "@/components/ClickSpark";
 
 export const metadata: Metadata = {
-  title: "MoneyTrail — your money, in bold",
+  title: "MoneyTrail — your money, finally legible",
   description:
     "A maximalist bento-grid personal finance tracker. Track income, expenses, budgets and goals with clarity.",
 };
@@ -22,7 +23,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
     <body>
-      <Providers>{children}</Providers>
+      <ClickSpark
+        sparkColor="#C2883B"
+        sparkSize={10}
+        sparkRadius={15}
+        sparkCount={8}
+        duration={400}
+        easing="ease-out"
+        extraScale={1}
+      >
+        <Providers>{children}</Providers>
+      </ClickSpark>
     </body>
     </html>
   );

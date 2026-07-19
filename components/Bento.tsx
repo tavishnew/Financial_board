@@ -50,7 +50,6 @@ export function BentoCard({
   return (
     <MotionTag
       variants={reduce ? undefined : item}
-      whileHover={hover && !reduce ? { y: -4 } : undefined}
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
       className={cn(
         "card relative overflow-hidden p-5 transition-shadow duration-300 ease-out-quint",

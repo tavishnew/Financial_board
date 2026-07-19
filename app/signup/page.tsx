@@ -50,7 +50,7 @@ export default function SignupPage() {
   return (
     <AuthLayout
       title="Create your account"
-      subtitle="Thirty seconds to a bolder money life."
+      subtitle="Thirty seconds to a clearer money life."
       footer={
         <>
           Already have one?{" "}

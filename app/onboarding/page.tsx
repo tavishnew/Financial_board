@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { Check, Wallet, PiggyBank } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/Button";
@@ -28,6 +28,7 @@ export default function OnboardingPage() {
   const toast = useToast();
   const { setCurrency, addAccount, upsertBudget, categories } = useStore();
   const [step, setStep] = useState(0);
+  const reduce = useReducedMotion();
 
   const [currency, setCurrencyState] = useState("INR");
   const [accName, setAccName] = useState("Salary Account");
@@ -82,7 +83,7 @@ export default function OnboardingPage() {
           ))}
         </div>
 
-        <motion.div key={step} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}>
+        <motion.div key={step} initial={reduce ? { opacity: 0 } : { opacity: 0, x: 20 }} animate={reduce ? { opacity: 1 } : { opacity: 1, x: 0 }} transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}>
           {step === 0 && (
             <div>
               <h1 className="display text-3xl text-ink">Pick your currency</h1>
@@ -93,7 +94,7 @@ export default function OnboardingPage() {
                     key={c}
                     onClick={() => setCurrencyState(c)}
                     className={cn(
-                      "rounded-2xl border py-4 text-lg font-bold transition-all",
+                      "rounded-2xl border py-4 text-lg font-bold transition-colors",
                       currency === c ? "border-primary bg-primary/10 text-primary" : "border-line text-ink hover:border-primary/50"
                     )}
                   >
@@ -121,7 +122,7 @@ export default function OnboardingPage() {
                       key={t.key}
                       onClick={() => setAccType(t.key)}
                       className={cn(
-                        "rounded-2xl border py-3 text-sm font-semibold transition-all",
+                        "rounded-2xl border py-3 text-sm font-semibold transition-colors",
                         accType === t.key ? "border-primary bg-primary/10 text-primary" : "border-line text-ink hover:border-primary/50"
                       )}
                     >

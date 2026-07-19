@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useMemo, useState } from "react";
 import { Plus, Pause, Play, RefreshCw, Trash2, Sparkles, Calendar, Clock, AlertTriangle } from "lucide-react";
@@ -109,7 +109,7 @@ export default function RecurringPage() {
       {/* Aggregate Overview card */}
       <div className="card mb-6 flex flex-col sm:flex-row items-center justify-between p-5 bg-white gap-4">
         <div className="flex items-center gap-4">
-          <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[#F97316]/10 text-[#F97316]">
+          <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[#C2883B]/10 text-[#C2883B]">
             <Clock size={22} strokeWidth={2.3} />
           </span>
           <div>
@@ -123,9 +123,9 @@ export default function RecurringPage() {
       </div>
 
       {/* Subscriptions alert / insights */}
-      <div className="card p-5 bg-[#2563EB]/5 border border-[#2563EB]/15 mb-6">
+      <div className="card p-5 bg-[#0E7C5B]/5 border border-[#0E7C5B]/15 mb-6">
         <div className="flex items-start gap-3">
-          <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#2563EB]/10 text-[#2563EB] shrink-0">
+          <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#0E7C5B]/10 text-[#0E7C5B] shrink-0">
             <Sparkles size={18} />
           </span>
           <div>
@@ -173,7 +173,7 @@ export default function RecurringPage() {
         {items.map((i) => {
           const isPaused = paused.has(i.id);
           return (
-            <div key={i.id} className={cn("card flex items-center gap-4 p-5 bg-white hover:border-[#2563EB]/40 transition-all", isPaused && "opacity-60 bg-slate-50/50")}>
+            <div key={i.id} className={cn("card flex items-center gap-4 p-5 bg-white hover:border-[#0E7C5B]/40", isPaused && "opacity-60 bg-slate-50/50")}>
               <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-primary/10 text-primary">
                 <Calendar size={20} strokeWidth={2.3} />
               </span>

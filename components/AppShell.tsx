@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
@@ -49,10 +49,10 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen lg:grid lg:grid-cols-[260px_1fr] bg-[#F8F7F4] dark:bg-[#0F172A]">
       {/* Sidebar (desktop) */}
-      <aside className="sticky top-0 hidden h-screen flex-col bg-[#1F2937] border-r border-[#2D3748] p-5 lg:flex">
+        <aside className="sticky top-0 hidden h-screen flex-col bg-[#1A1611] border-r border-[#2C2620] p-5 lg:flex">
         {/* Workspace switcher / Profile Menu */}
         <div className="flex items-center gap-3 px-2 py-3 border-b border-white/10 mb-4 text-white">
-          <div className="h-9 w-9 rounded-xl bg-[#2563EB] text-white flex items-center justify-center font-bold text-sm shadow-md shadow-[#2563EB]/25">
+          <div className="h-9 w-9 rounded-xl bg-[#0E7C5B] text-white flex items-center justify-center font-bold text-sm shadow-md shadow-[#0E7C5B]/25">
             {user.name?.charAt(0).toUpperCase()}
           </div>
           <div className="flex-1 min-w-0">
@@ -68,7 +68,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <input
             type="text"
             placeholder="Search workspace..."
-            className="w-full h-9 pl-9 pr-3 rounded-xl bg-white/5 border border-white/10 text-xs text-white placeholder-slate-400 outline-none focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]/50 transition-all"
+          className="w-full h-9 pl-9 pr-3 rounded-xl bg-white/5 border border-white/10 text-xs text-white placeholder-slate-400 outline-none focus:border-[#0E7C5B] focus:ring-1 focus:ring-[#0E7C5B]/50 transition-colors"
           />
         </div>
 
@@ -82,9 +82,9 @@ export function AppShell({ children }: { children: ReactNode }) {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all duration-200",
+                  "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors duration-200",
                   active
-                    ? "bg-[#2563EB] text-white shadow-lg shadow-[#2563EB]/20"
+                    ? "bg-[#0E7C5B] text-white shadow-lg shadow-[#0E7C5B]/20"
                     : "text-slate-300 hover:bg-white/5 hover:text-white"
                 )}
               >
@@ -98,7 +98,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         {/* Footer info in sidebar */}
         <div className="pt-4 border-t border-white/10 mt-auto">
           <div className="flex items-center gap-2 px-2 text-slate-400 text-xs font-semibold">
-            <Logo size={20} className="text-[#2563EB]" />
+            <Logo size={20} className="text-[#0E7C5B]" />
             <span>MoneyTrail v1.0</span>
           </div>
         </div>
@@ -108,9 +108,9 @@ export function AppShell({ children }: { children: ReactNode }) {
       {mobileOpen && (
         <div className="fixed inset-0 z-[100] lg:hidden">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
-          <aside className="absolute left-0 top-0 h-full w-64 bg-[#1F2937] p-5 flex flex-col">
+            <aside className="absolute left-0 top-0 h-full w-64 bg-[#1A1611] p-5 flex flex-col">
             <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-4 text-white">
-              <Logo className="text-[#2563EB]" />
+              <Logo className="text-[#0E7C5B]" />
               <button onClick={() => setMobileOpen(false)} className="text-slate-400 hover:text-white">
                 <X size={20} />
               </button>
@@ -136,8 +136,8 @@ export function AppShell({ children }: { children: ReactNode }) {
                     href={item.href}
                     onClick={() => setMobileOpen(false)}
                     className={cn(
-                      "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all",
-                      active ? "bg-[#2563EB] text-white" : "text-slate-300 hover:bg-white/5"
+                      "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors",
+                      active ? "bg-[#0E7C5B] text-white" : "text-slate-300 hover:bg-white/5"
                     )}
                   >
                     <Icon size={18} strokeWidth={2.3} />
@@ -162,7 +162,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           </button>
           
           <div className="hidden lg:flex items-center gap-2">
-            <span className="text-xs font-semibold px-2.5 py-1 rounded-pill bg-[#2563EB]/10 text-[#2563EB] tracking-wide uppercase">
+            <span className="text-xs font-semibold px-2.5 py-1 rounded-pill bg-[#0E7C5B]/10 text-[#0E7C5B] tracking-wide uppercase">
               Workspace
             </span>
           </div>
@@ -172,7 +172,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <div className="relative">
             <button
               onClick={() => setAlertsOpen((v) => !v)}
-              className="relative grid h-10 w-10 place-items-center rounded-xl border border-line bg-surface text-ink hover:border-[#2563EB] hover:text-[#2563EB] transition-colors"
+              className="relative grid h-10 w-10 place-items-center rounded-xl border border-line bg-surface text-ink hover:border-[#0E7C5B] hover:text-[#0E7C5B] transition-colors"
               aria-label="Notifications"
             >
               <Bell size={18} strokeWidth={2.3} />
@@ -218,8 +218,8 @@ export function AppShell({ children }: { children: ReactNode }) {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "grid h-11 w-14 place-items-center rounded-xl transition-all",
-                  active ? "bg-[#2563EB] text-white shadow-md shadow-[#2563EB]/25" : "text-muted hover:text-ink"
+                  "grid h-11 w-14 place-items-center rounded-xl transition-colors",
+                  active ? "bg-[#0E7C5B] text-white shadow-md shadow-[#0E7C5B]/25" : "text-muted hover:text-ink"
                 )}
               >
                 <Icon size={20} strokeWidth={2.3} />

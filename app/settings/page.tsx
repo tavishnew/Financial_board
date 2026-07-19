@@ -59,7 +59,7 @@ export default function SettingsPage() {
         <button
           onClick={() => setCurrentTab("general")}
           className={cn(
-            "pb-3 text-sm font-bold border-b-2 transition-all",
+            "pb-3 text-sm font-bold border-b-2 transition-colors",
             currentTab === "general" ? "border-primary text-primary" : "border-transparent text-muted hover:text-ink"
           )}
         >
@@ -68,7 +68,7 @@ export default function SettingsPage() {
         <button
           onClick={() => setCurrentTab("categories")}
           className={cn(
-            "pb-3 text-sm font-bold border-b-2 transition-all",
+            "pb-3 text-sm font-bold border-b-2 transition-colors",
             currentTab === "categories" ? "border-primary text-primary" : "border-transparent text-muted hover:text-ink"
           )}
         >
@@ -77,7 +77,7 @@ export default function SettingsPage() {
         <button
           onClick={() => setCurrentTab("accounts")}
           className={cn(
-            "pb-3 text-sm font-bold border-b-2 transition-all",
+            "pb-3 text-sm font-bold border-b-2 transition-colors",
             currentTab === "accounts" ? "border-primary text-primary" : "border-transparent text-muted hover:text-ink"
           )}
         >
@@ -161,7 +161,7 @@ export default function SettingsPage() {
                     )}
                     aria-pressed={notif[n.key]}
                   >
-                    <span className={cn("absolute top-0.5 h-5 w-5 rounded-full bg-white transition-all shadow-sm", notif[n.key] ? "left-5.5" : "left-0.5")} />
+                    <span className={cn("absolute top-0.5 h-5 w-5 rounded-full bg-white transition-[left,box-shadow] shadow-sm", notif[n.key] ? "left-5.5" : "left-0.5")} />
                   </button>
                 </div>
               ))}

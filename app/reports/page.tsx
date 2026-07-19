@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useMemo } from "react";
 import { Calculator, Printer } from "lucide-react";
@@ -74,7 +74,7 @@ export default function ReportsPage() {
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={cn(
-              "pb-3 text-sm font-bold border-b-2 transition-all capitalize",
+              "pb-3 text-sm font-bold border-b-2 transition-colors capitalize",
               activeTab === tab ? "border-primary text-primary" : "border-transparent text-muted hover:text-ink"
             )}
           >
@@ -229,7 +229,7 @@ export default function ReportsPage() {
               </div>
             </div>
 
-            <div className="text-xs text-muted flex items-start gap-2 bg-[#2563EB]/5 p-3 rounded-lg border border-[#2563EB]/10">
+            <div className="text-xs text-muted flex items-start gap-2 bg-[#0E7C5B]/5 p-3 rounded-lg border border-[#0E7C5B]/10">
               <Calculator size={14} className="text-primary mt-0.5 shrink-0" />
               <span>
                 Disclaimer: MoneyTrail tax reports are mathematical estimations for reference purposes only and do not constitute certified tax or legal advice.

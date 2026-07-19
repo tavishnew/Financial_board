@@ -13,12 +13,14 @@ import {
 } from "recharts";
 import { useStore } from "@/lib/store";
 import { monthlyTrend } from "@/lib/selectors";
+import { DEMO_TRANSACTIONS } from "@/lib/demo";
 import { formatCompact } from "@/lib/format";
 import { ChartTooltip } from "./ChartTooltip";
 
 export function CompareBar({ months = 6 }: { months?: number }) {
   const { transactions, user } = useStore();
-  const data = useMemo(() => monthlyTrend(transactions, months), [transactions]);
+  const txns = transactions.length ? transactions : DEMO_TRANSACTIONS;
+  const data = useMemo(() => monthlyTrend(txns, months), [txns]);
 
   return (
     <ResponsiveContainer width="100%" height={260}>
