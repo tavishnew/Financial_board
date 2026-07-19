@@ -9,7 +9,7 @@ const accounts: Account[] = [
 
 const cats: Category[] = [
   { id: "c1", key: "food", name: "Food", isDefault: true },
-  { id: "c2", key: "income", name: "Income", isDefault: true },
+  { id: "c2", key: "savings", name: "Savings", isDefault: true },
 ];
 
 const day = (daysAgo: number) => {

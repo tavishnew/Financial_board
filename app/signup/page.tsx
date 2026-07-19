@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { signIn } from "next-auth/react";
 import { Mail, Lock, User as UserIcon } from "lucide-react";
 import { AuthLayout } from "@/components/AuthLayout";
 import { Button } from "@/components/Button";
@@ -14,15 +15,36 @@ export default function SignupPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!name || !email || !password) {
       toast("Fill in every field to continue", "error");
       return;
     }
-    toast("Account created — let's set you up", "success");
-    router.push("/onboarding");
+    setLoading(true);
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      });
+      if (!res.ok) {
+        const data = (await res.json().catch(() => ({}))) as { error?: string };
+        toast(data.error ?? "Could not create account — is that email taken?", "error");
+        return;
+      }
+      const signInRes = await signIn("credentials", { email, password, redirect: false });
+      if (signInRes?.error) {
+        toast("Account created — please log in", "info");
+        router.push("/login");
+        return;
+      }
+      router.push("/onboarding");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -45,6 +67,7 @@ export default function SignupPage() {
             onChange={(e) => setName(e.target.value)}
             className="h-12 w-full bg-transparent text-ink outline-none"
             placeholder="Tavis"
+            autoComplete="name"
           />
         </Field>
         <Field icon={<Mail size={18} />} label="Email">
@@ -54,6 +77,7 @@ export default function SignupPage() {
             onChange={(e) => setEmail(e.target.value)}
             className="h-12 w-full bg-transparent text-ink outline-none"
             placeholder="you@email.com"
+            autoComplete="email"
           />
         </Field>
         <Field icon={<Lock size={18} />} label="Password">
@@ -63,9 +87,10 @@ export default function SignupPage() {
             onChange={(e) => setPassword(e.target.value)}
             className="h-12 w-full bg-transparent text-ink outline-none"
             placeholder="••••••••"
+            autoComplete="new-password"
           />
         </Field>
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full" disabled={loading}>
           Create account
         </Button>
       </form>

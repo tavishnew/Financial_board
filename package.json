@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "node scripts/setup-db.mjs && next dev",
+    "dev": "node scripts/setup-db.mjs && next dev -p 3100",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -14,7 +14,7 @@
     "test": "vitest run"
   },
   "prisma": {
-    "seed": "tsx prisma/seed.ts"
+    "seed": "node scripts/setup-db.mjs"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.4",

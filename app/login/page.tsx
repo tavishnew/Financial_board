@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { signIn } from "next-auth/react";
 import { Mail, Lock } from "lucide-react";
 import { AuthLayout } from "@/components/AuthLayout";
 import { Button } from "@/components/Button";
@@ -13,14 +14,21 @@ export default function LoginPage() {
   const toast = useToast();
   const [email, setEmail] = useState("tavis@finance.app");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!email || !password) {
       toast("Enter your email and password", "error");
       return;
     }
-    toast("Welcome back!", "success");
+    setLoading(true);
+    const res = await signIn("credentials", { email, password, redirect: false });
+    setLoading(false);
+    if (res?.error) {
+      toast("Invalid email or password", "error");
+      return;
+    }
     router.push("/dashboard");
   }
 
@@ -45,6 +53,7 @@ export default function LoginPage() {
             onChange={(e) => setEmail(e.target.value)}
             className="h-12 w-full bg-transparent text-ink outline-none"
             placeholder="you@email.com"
+            autoComplete="email"
           />
         </Field>
         <Field icon={<Lock size={18} />} label="Password">
@@ -54,21 +63,12 @@ export default function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
             className="h-12 w-full bg-transparent text-ink outline-none"
             placeholder="••••••••"
+            autoComplete="current-password"
           />
         </Field>
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full" disabled={loading}>
           Log in
         </Button>
-        <button
-          type="button"
-          onClick={() => {
-            toast("Demo mode — jumping in", "info");
-            router.push("/dashboard");
-          }}
-          className="w-full text-sm font-semibold text-muted hover:text-ink"
-        >
-          Continue as guest (demo)
-        </button>
       </form>
     </AuthLayout>
   );

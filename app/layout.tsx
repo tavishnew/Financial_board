@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider, themeInitScript } from "@/components/ThemeProvider";
-import { StoreProvider } from "@/lib/store";
-import { ToastProvider } from "@/components/Toast";
+import { Providers } from "@/components/Providers";
 
 export const metadata: Metadata = {
   title: "Finboard — your money, in bold",
@@ -22,13 +21,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body>
-        <ThemeProvider>
-          <StoreProvider>
-            <ToastProvider>{children}</ToastProvider>
-          </StoreProvider>
-        </ThemeProvider>
-      </body>
+    <body>
+      <Providers>{children}</Providers>
+    </body>
     </html>
   );
 }
