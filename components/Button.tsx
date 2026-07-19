@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { forwardRef, type ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/cn";
@@ -13,7 +13,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-primary text-on-primary hover:bg-primary-press shadow-[var(--shadow-glow)] hover:-translate-y-0.5",
+    "bg-primary text-white hover:bg-primary-press shadow-[var(--shadow-glow)] hover:-translate-y-0.5",
   ghost: "bg-transparent text-ink hover:bg-surface-2",
   soft: "bg-surface-2 text-ink hover:bg-line/60",
   danger: "bg-danger text-white hover:opacity-90",
@@ -22,8 +22,8 @@ const variants: Record<Variant, string> = {
 
 const sizes: Record<Size, string> = {
   sm: "h-9 px-3 text-sm rounded-xl",
-  md: "h-11 px-5 text-[0.95rem] rounded-button",
-  lg: "h-13 px-7 text-base rounded-button",
+  md: "h-11 px-5 text-[0.95rem] rounded-2xl",
+  lg: "h-13 px-7 text-base rounded-2xl",
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -41,3 +41,4 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   )
 );
 Button.displayName = "Button";
+

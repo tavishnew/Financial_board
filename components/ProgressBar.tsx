@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/cn";
@@ -37,3 +37,4 @@ export function ProgressBar({
     </div>
   );
 }
+

@@ -1,82 +1,145 @@
-"use client";
+﻿"use client";
 
-import { useState } from "react";
-import { Download } from "lucide-react";
+import { useState, useMemo } from "react";
+import { Download, Sparkles, TrendingUp, Calendar, ChevronRight, Calculator } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { BentoCard } from "@/components/Bento";
-import { CategoryPie, CompareBar, TrendArea } from "@/components/charts/lazy";
+import { CategoryPie } from "@/components/charts/lazy";
+import { CompareBar } from "@/components/charts/lazy";
+import { TrendArea } from "@/components/charts/lazy";
 import { Button } from "@/components/Button";
 import { useStore } from "@/lib/store";
-import { monthTotals } from "@/lib/selectors";
+import { monthTotals, netWorth } from "@/lib/selectors";
 import { formatMoney } from "@/lib/format";
 import { cn } from "@/lib/cn";
 
 const RANGES = [
-  { label: "3M", months: 3 },
-  { label: "6M", months: 6 },
-  { label: "12M", months: 12 },
+  { label: "Quarterly View", months: 3 },
+  { label: "6 Months View", months: 6 },
+  { label: "Annual View", months: 12 },
 ];
 
 export default function AnalyticsPage() {
-  const { transactions, user } = useStore();
+  const { transactions, user, accounts } = useStore();
   const [range, setRange] = useState(6);
 
   const totals = monthTotals(transactions);
+  const currentNetWorth = netWorth(accounts);
+
+  // Dynamic story stats
+  const savingsRate = totals.income ? Math.round((totals.net / totals.income) * 100) : 0;
+  const yearlyForecast = totals.net * 12;
 
   return (
     <AppShell>
-      <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+      {/* Editorial Title */}
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-line pb-6">
         <div>
-          <div className="kicker">The long view</div>
-          <h1 className="display text-3xl text-ink">Analytics</h1>
+          <div className="kicker text-primary font-semibold">The long view</div>
+          <h1 className="display text-3xl text-ink font-bold">Your financial story</h1>
+          <p className="text-muted text-sm mt-1">Review trends, analyze your spend, and project future growth.</p>
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex rounded-pill bg-surface-2 p-1">
+          <div className="flex rounded-pill bg-surface-2 p-1 border border-line">
             {RANGES.map((r) => (
               <button
                 key={r.months}
                 onClick={() => setRange(r.months)}
                 className={cn(
-                  "rounded-pill px-3 py-1.5 text-sm font-semibold transition-colors",
-                  range === r.months ? "bg-primary text-on-primary" : "text-muted hover:text-ink"
+                  "rounded-pill px-3 py-1.5 text-xs font-bold transition-all",
+                  range === r.months ? "bg-primary text-white" : "text-muted hover:text-ink"
                 )}
               >
                 {r.label}
               </button>
             ))}
           </div>
-          <Button variant="outline" size="sm" onClick={() => window.print()}>
-            <Download size={16} /> Report
+          <Button variant="outline" size="sm" onClick={() => window.print()} className="h-10 text-xs font-bold">
+            <Download size={14} /> Print Report
           </Button>
         </div>
       </div>
 
-      <div className="mb-4 grid gap-3 sm:grid-cols-3">
-        <Stat label="Income (this month)" value={formatMoney(totals.income, user.currency)} hue="var(--c-income)" />
-        <Stat label="Expense (this month)" value={formatMoney(totals.expense, user.currency)} hue="var(--c-bills)" />
-        <Stat label="Net (this month)" value={formatMoney(totals.net, user.currency)} hue="var(--primary)" />
+      {/* Editorial Summary / Story Cards */}
+      <div className="mb-6 grid gap-4 sm:grid-cols-3">
+        <div className="card p-5 bg-white">
+          <div className="text-xs font-bold text-muted uppercase tracking-wider">Net Earned (This Month)</div>
+          <div className="display tabnum mt-1.5 text-2xl text-[#22C55E] font-bold">
+            {formatMoney(totals.income, user.currency)}
+          </div>
+          <div className="text-xs text-muted mt-2">Received across all verified deposit streams</div>
+        </div>
+        
+        <div className="card p-5 bg-white">
+          <div className="text-xs font-bold text-muted uppercase tracking-wider">Net Spent (This Month)</div>
+          <div className="display tabnum mt-1.5 text-2xl text-[#EF4444] font-bold">
+            {formatMoney(totals.expense, user.currency)}
+          </div>
+          <div className="text-xs text-muted mt-2">Deducted from connected banks &amp; credit lines</div>
+        </div>
+
+        <div className="card p-5 bg-white">
+          <div className="text-xs font-bold text-muted uppercase tracking-wider">Saved (This Month)</div>
+          <div className="display tabnum mt-1.5 text-2xl text-[#2563EB] font-bold">
+            {formatMoney(totals.net, user.currency)}
+          </div>
+          <div className="text-xs text-muted mt-2">Added directly to your cumulative Net Worth</div>
+        </div>
       </div>
 
-      <BentoCard className="mb-4" hover={false}>
-        <div className="mb-3 flex items-center justify-between">
-          <span className="kicker">Income vs expense</span>
-          <span className="text-sm text-muted">Last {range} months</span>
+      {/* Intelligent Narrative Story & Forecast card */}
+      <div className="card p-6 bg-[#2563EB]/5 border border-[#2563EB]/15 mb-6">
+        <div className="flex items-start gap-4">
+          <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[#2563EB]/10 text-[#2563EB] shrink-0">
+            <Sparkles size={20} />
+          </span>
+          <div>
+            <h2 className="text-lg font-bold text-ink mb-1">Savings Trend &amp; Forecast</h2>
+            <p className="text-sm text-muted leading-relaxed max-w-3xl">
+              Based on this month&apos;s positive cash flow, you maintained a stellar savings rate of{" "}
+              <span className="font-bold text-ink">{savingsRate}%</span>. 
+              At your current velocity, you are on track to save approximately{" "}
+              <span className="font-bold text-[#22C55E]">{formatMoney(yearlyForecast, user.currency)}</span> over the next 12 months. 
+              This will increase your current net worth to{" "}
+              <span className="font-bold text-ink">{formatMoney(currentNetWorth + yearlyForecast, user.currency)}</span>. 
+              Keep moving toward your goals!
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Primary Comparative Chart */}
+      <BentoCard className="mb-6 p-6 bg-white" hover={false}>
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <span className="kicker text-muted">Income Comparison</span>
+            <h3 className="text-lg font-bold text-ink">Income vs Expense trends</h3>
+          </div>
+          <span className="text-xs text-muted font-semibold">Last {range} months</span>
         </div>
         <CompareBar months={range} />
       </BentoCard>
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        <BentoCard hover={false}>
-          <div className="mb-3 flex items-center justify-between">
-            <span className="kicker">Trend</span>
-            <span className="text-sm text-muted">Last {range} months</span>
+      {/* Secondary split analysis */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        <BentoCard hover={false} className="p-6 bg-white">
+          <div className="mb-4 flex items-center justify-between">
+            <div>
+              <span className="kicker text-muted">Cash Flow Trend</span>
+              <h3 className="text-lg font-bold text-ink">Growth area map</h3>
+            </div>
+            <span className="text-xs text-muted font-semibold">Last {range} months</span>
           </div>
           <TrendArea months={range} />
         </BentoCard>
-        <BentoCard hover={false}>
-          <div className="mb-3 flex items-center justify-between">
-            <span className="kicker">Category split</span>
-            <span className="text-sm text-muted">This month</span>
+        
+        <BentoCard hover={false} className="p-6 bg-white">
+          <div className="mb-4 flex items-center justify-between">
+            <div>
+              <span className="kicker text-muted">Category Split</span>
+              <h3 className="text-lg font-bold text-ink">Where your money is going</h3>
+            </div>
+            <span className="text-xs text-muted font-semibold">This Month</span>
           </div>
           <CategoryPie />
         </BentoCard>
@@ -85,13 +148,3 @@ export default function AnalyticsPage() {
   );
 }
 
-function Stat({ label, value, hue }: { label: string; value: string; hue: string }) {
-  return (
-    <div className="card p-4">
-      <div className="text-sm text-muted">{label}</div>
-      <div className="display tabnum mt-1 text-2xl" style={{ color: hue }}>
-        {value}
-      </div>
-    </div>
-  );
-}

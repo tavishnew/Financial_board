@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { CATEGORY_META } from "@/lib/categories";
 import type { CategoryKey } from "@/lib/types";
@@ -28,3 +28,4 @@ export function CategoryBadge({
     </span>
   );
 }
+

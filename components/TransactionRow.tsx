@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Wallet } from "lucide-react";
 import { useStore } from "@/lib/store";
@@ -42,3 +42,4 @@ export function TransactionRow({ txn }: { txn: Transaction }) {
     </div>
   );
 }
+

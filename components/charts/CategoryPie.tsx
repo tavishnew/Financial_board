@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo } from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
@@ -72,3 +72,4 @@ export function CategoryPie({ monthsAgo = 0 }: { monthsAgo?: number }) {
     </div>
   );
 }
+

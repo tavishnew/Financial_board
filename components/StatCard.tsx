@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { type LucideIcon } from "lucide-react";
 import { CountUp } from "./CountUp";
@@ -65,3 +65,4 @@ export function StatCard({
     </div>
   );
 }
+

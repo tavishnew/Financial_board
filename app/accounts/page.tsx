@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { Plus, Landmark, CreditCard, Wallet, PiggyBank, Archive, ArchiveRestore } from "lucide-react";
@@ -168,3 +168,4 @@ export default function AccountsPage() {
     </AppShell>
   );
 }
+

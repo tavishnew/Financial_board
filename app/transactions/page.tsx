@@ -1,7 +1,7 @@
-"use client";
+﻿"use client";
 
 import { useMemo, useRef, useState } from "react";
-import { Search, Download, Upload, Trash2, X, Check } from "lucide-react";
+import { Search, Download, Upload, Trash2, X, Check, Calendar, ArrowRightLeft, TrendingDown, ArrowUpRight, HelpCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { TransactionRow } from "@/components/TransactionRow";
 import { Button } from "@/components/Button";
@@ -10,14 +10,14 @@ import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { useStore } from "@/lib/store";
 import { useToast } from "@/components/Toast";
 import { CATEGORY_META } from "@/lib/categories";
-import { formatDate } from "@/lib/format";
+import { formatDate, formatMoney } from "@/lib/format";
 import { cn } from "@/lib/cn";
 import type { TxnType } from "@/lib/types";
 
 const PAGE = 12;
 
 export default function TransactionsPage() {
-  const { transactions, categories, accounts, deleteTransaction, addTransaction } = useStore();
+  const { transactions, categories, accounts, deleteTransaction, addTransaction, user } = useStore();
   const toast = useToast();
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -29,6 +29,7 @@ export default function TransactionsPage() {
   const [confirmId, setConfirmId] = useState<string | null>(null);
   const [confirmBulk, setConfirmBulk] = useState(false);
   const [visible, setVisible] = useState(PAGE);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const catMap = useMemo(
     () => Object.fromEntries(categories.map((c) => [c.id, c])),
@@ -64,12 +65,43 @@ export default function TransactionsPage() {
   const shown = filtered.slice(0, visible);
   const allSelected = filtered.length > 0 && selected.size === filtered.length;
 
+  // Monthly summary metrics for filtered set
+  const monthlySummary = useMemo(() => {
+    let totalIncome = 0;
+    let totalExpense = 0;
+    filtered.forEach((t) => {
+      const amt = Number(t.amount);
+      if (t.type === "income") {
+        totalIncome += amt;
+      } else {
+        totalExpense += amt;
+      }
+    });
+    return {
+      income: totalIncome,
+      expense: totalExpense,
+      net: totalIncome - totalExpense,
+    };
+  }, [filtered]);
+
   function toggle(id: string) {
     setSelected((s) => {
       const next = new Set(s);
       next.has(id) ? next.delete(id) : next.add(id);
       return next;
     });
+  }
+
+  function toggleSelectAll() {
+    if (selected.size === filtered.length) {
+      setSelected(new Set());
+    } else {
+      setSelected(new Set(filtered.map((t) => t.id)));
+    }
+  }
+
+  function toggleExpand(id: string) {
+    setExpandedId((prev) => (prev === id ? null : id));
   }
 
   function exportCsv() {
@@ -91,10 +123,10 @@ export default function TransactionsPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "finboard-transactions.csv";
+    a.download = "Finboard-ledger.csv";
     a.click();
     URL.revokeObjectURL(url);
-    toast(`Exported ${filtered.length} transactions`, "success");
+    toast(`Exported ${filtered.length} transactions successfully`, "success");
   }
 
   function importCsv(e: React.ChangeEvent<HTMLInputElement>) {
@@ -120,7 +152,7 @@ export default function TransactionsPage() {
         });
         count++;
       }
-      toast(`Imported ${count} transactions`, "success");
+      toast(`Imported ${count} transactions into workspace`, "success");
       if (fileRef.current) fileRef.current.value = "";
     };
     reader.readAsText(file);
@@ -128,58 +160,103 @@ export default function TransactionsPage() {
 
   function deleteSelected() {
     selected.forEach((id) => deleteTransaction(id));
-    toast(`Deleted ${selected.size} transactions`, "success");
+    toast(`Successfully deleted ${selected.size} transactions`, "success");
     setSelected(new Set());
     setConfirmBulk(false);
   }
 
   return (
     <AppShell>
-      <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+      {/* Title block */}
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <div className="kicker">Money in motion</div>
-          <h1 className="display text-3xl text-ink">Transactions</h1>
+          <div className="kicker text-primary font-semibold">Ledger &amp; Bookkeeping</div>
+          <h1 className="display text-3xl text-ink font-bold">Where your money is going</h1>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={() => fileRef.current?.click()}>
-            <Upload size={16} /> Import
+          <Button variant="outline" size="sm" onClick={() => fileRef.current?.click()} className="h-10 text-xs">
+            <Upload size={14} /> Import CSV
           </Button>
-          <Button variant="outline" size="sm" onClick={exportCsv}>
-            <Download size={16} /> Export
+          <Button variant="outline" size="sm" onClick={exportCsv} className="h-10 text-xs">
+            <Download size={14} /> Export CSV
           </Button>
           <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={importCsv} />
         </div>
       </div>
 
-      {/* Controls */}
-      <div className="mb-4 space-y-3">
-        <div className="flex items-center gap-2 rounded-2xl border border-line bg-surface-2 px-4">
-          <Search size={18} className="text-muted" />
+      {/* Monthly summary analytics cards */}
+      <div className="grid gap-4 sm:grid-cols-3 mb-6">
+        <div className="card p-5 bg-white flex items-center justify-between">
+          <div>
+            <div className="text-xs font-bold text-muted uppercase tracking-wider flex items-center gap-1">
+              <ArrowUpRight size={14} className="text-[#22C55E]" /> Total Received
+            </div>
+            <div className="display tabnum text-xl mt-1 text-[#22C55E] font-bold">
+              {formatMoney(monthlySummary.income, user.currency)}
+            </div>
+          </div>
+          <span className="text-[10px] bg-[#22C55E]/10 text-[#22C55E] px-2 py-0.5 rounded font-bold uppercase">Filtered</span>
+        </div>
+        
+        <div className="card p-5 bg-white flex items-center justify-between">
+          <div>
+            <div className="text-xs font-bold text-muted uppercase tracking-wider flex items-center gap-1">
+              <TrendingDown size={14} className="text-[#EF4444]" /> Total Spent
+            </div>
+            <div className="display tabnum text-xl mt-1 text-[#EF4444] font-bold">
+              {formatMoney(monthlySummary.expense, user.currency)}
+            </div>
+          </div>
+          <span className="text-[10px] bg-[#EF4444]/10 text-[#EF4444] px-2 py-0.5 rounded font-bold uppercase">Filtered</span>
+        </div>
+
+        <div className="card p-5 bg-white flex items-center justify-between">
+          <div>
+            <div className="text-xs font-bold text-muted uppercase tracking-wider flex items-center gap-1">
+              <ArrowRightLeft size={14} className="text-primary" /> Net Cash Flow
+            </div>
+            <div className={cn("display tabnum text-xl mt-1 font-bold", monthlySummary.net >= 0 ? "text-primary" : "text-danger")}>
+              {formatMoney(monthlySummary.net, user.currency)}
+            </div>
+          </div>
+          <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded font-bold uppercase">Filtered</span>
+        </div>
+      </div>
+
+      {/* Modern filters workspace toolbar */}
+      <div className="card p-4 bg-white mb-6 space-y-3">
+        <div className="flex items-center gap-2 rounded-xl bg-surface-2 border border-line px-3 py-1">
+          <Search size={16} className="text-muted shrink-0" />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search notes, categories, accounts…"
-            className="h-11 w-full bg-transparent text-ink outline-none"
+            placeholder="Search merchants, categories, or accounts..."
+            className="h-9 w-full bg-transparent text-sm text-ink outline-none"
           />
         </div>
-        <div className="flex flex-wrap items-center gap-2">
-          {(["all", "expense", "income"] as const).map((t) => (
-            <button
-              key={t}
-              onClick={() => setType(t)}
-              className={cn(
-                "rounded-pill px-3 py-1.5 text-sm font-semibold capitalize transition-colors",
-                type === t ? "bg-primary text-on-primary" : "bg-surface-2 text-muted hover:text-ink"
-              )}
-            >
-              {t}
-            </button>
-          ))}
-          <span className="mx-1 h-5 w-px bg-line" />
+        
+        <div className="flex flex-wrap items-center gap-2 pt-1">
+          <div className="flex bg-surface-2 p-0.5 rounded-pill border border-line">
+            {(["all", "expense", "income"] as const).map((t) => (
+              <button
+                key={t}
+                onClick={() => setType(t)}
+                className={cn(
+                  "rounded-pill px-3 py-1 text-xs font-bold capitalize transition-all",
+                  type === t ? "bg-primary text-white" : "text-muted hover:text-ink"
+                )}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+
+          <span className="h-5 w-px bg-line" />
+
           <select
             value={catFilter}
             onChange={(e) => setCatFilter(e.target.value)}
-            className="h-9 rounded-pill border border-line bg-surface-2 px-3 text-sm text-ink outline-none"
+            className="h-8 rounded-pill border border-line bg-surface-2 px-3 text-xs font-semibold text-ink outline-none"
           >
             <option value="all">All categories</option>
             {categories.map((c) => (
@@ -188,10 +265,11 @@ export default function TransactionsPage() {
               </option>
             ))}
           </select>
+
           <select
             value={accFilter}
             onChange={(e) => setAccFilter(e.target.value)}
-            className="h-9 rounded-pill border border-line bg-surface-2 px-3 text-sm text-ink outline-none"
+            className="h-8 rounded-pill border border-line bg-surface-2 px-3 text-xs font-semibold text-ink outline-none"
           >
             <option value="all">All accounts</option>
             {accounts.filter((a) => !a.archived).map((a) => (
@@ -203,83 +281,183 @@ export default function TransactionsPage() {
         </div>
       </div>
 
-      {/* Bulk bar */}
+      {/* Bulk actions panel */}
       {selected.size > 0 && (
-        <div className="mb-3 flex items-center justify-between rounded-2xl border border-primary/40 bg-primary/10 px-4 py-2.5">
-          <span className="text-sm font-semibold text-ink">{selected.size} selected</span>
+        <div className="mb-4 flex items-center justify-between rounded-xl border border-[#2563EB]/25 bg-[#2563EB]/5 px-4 py-3 shadow-sm animate-pulse">
+          <span className="text-xs font-bold text-ink">{selected.size} items selected</span>
           <div className="flex gap-2">
-            <Button variant="soft" size="sm" onClick={() => setSelected(new Set())}>
-              Clear
+            <Button variant="outline" size="sm" onClick={() => setSelected(new Set())} className="h-8 text-xs font-bold">
+              Clear Choice
             </Button>
-            <Button variant="danger" size="sm" onClick={() => setConfirmBulk(true)}>
-              <Trash2 size={15} /> Delete
+            <Button variant="danger" size="sm" onClick={() => setConfirmBulk(true)} className="h-8 text-xs font-bold">
+              <Trash2 size={13} /> Bulk Delete
             </Button>
           </div>
         </div>
       )}
 
-      {/* List */}
-      <div className="card divide-y divide-line p-3 sm:p-4">
-        {filtered.length === 0 ? (
-          <EmptyState
-            icon={Search}
-            title="No transactions match"
-            description="Try clearing filters or add a new transaction to get started."
-          />
-        ) : (
-          shown.map((t) => (
-            <div key={t.id} className="flex items-center gap-3 py-0.5">
-              <button
-                onClick={() => toggle(t.id)}
-                aria-label="Select transaction"
-                className={cn(
-                  "grid h-5 w-5 shrink-0 place-items-center rounded-md border transition-colors",
-                  selected.has(t.id) ? "border-primary bg-primary text-on-primary" : "border-line"
-                )}
-              >
-                {selected.has(t.id) && <Check size={13} />}
-              </button>
-              <div className="min-w-0 flex-1">
-                <TransactionRow txn={t} />
-              </div>
-              <button
-                onClick={() => setConfirmId(t.id)}
-                aria-label="Delete transaction"
-                className="shrink-0 rounded-xl p-2 text-muted hover:bg-[color:var(--c-bills)]/10 hover:text-[color:var(--c-bills)]"
-              >
-                <Trash2 size={16} />
-              </button>
-            </div>
-          ))
-        )}
+      {/* Transactions list container */}
+      <div className="card overflow-hidden bg-white shadow-sm border border-line">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse table-fixed">
+            {/* Sticky Table Headers */}
+            <thead className="bg-[#F8F7F4] border-b border-line text-xs font-bold uppercase text-muted tracking-wider sticky top-0 z-10">
+              <tr>
+                <th className="w-12 py-3.5 pl-4 text-center">
+                  <button
+                    onClick={toggleSelectAll}
+                    aria-label="Select all matching"
+                    className={cn(
+                      "grid h-5 w-5 place-items-center rounded-md border mx-auto transition-colors",
+                      allSelected ? "border-primary bg-primary text-white" : "border-line"
+                    )}
+                  >
+                    {allSelected && <Check size={13} />}
+                  </button>
+                </th>
+                <th className="py-3.5 pl-2 text-left w-[40%]">Merchant &amp; Details</th>
+                <th className="py-3.5 text-left hidden sm:table-cell w-[25%]">Account</th>
+                <th className="py-3.5 text-right w-[20%]">Amount</th>
+                <th className="py-3.5 pr-4 text-center w-16">Actions</th>
+              </tr>
+            </thead>
+            
+            <tbody className="divide-y divide-line">
+              {filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="py-12">
+                    <EmptyState
+                      icon={Search}
+                      title="No matching records found"
+                      description="Clear your filter criteria or register a new transaction to populate the ledger."
+                    />
+                  </td>
+                </tr>
+              ) : (
+                shown.map((t) => {
+                  const isExpanded = expandedId === t.id;
+                  const cat = t.categoryId ? catMap[t.categoryId] : null;
+                  const meta = cat ? CATEGORY_META[cat.key] : null;
+                  const Icon = meta?.icon ?? HelpCircle;
+                  return (
+                    <tr key={t.id} className={cn("hover:bg-slate-50/50 transition-colors", isExpanded && "bg-slate-50")}>
+                      {/* Checkbox */}
+                      <td className="py-4 text-center border-b border-line pl-4">
+                        <button
+                          onClick={() => toggle(t.id)}
+                          aria-label="Select row"
+                          className={cn(
+                            "grid h-5 w-5 place-items-center rounded-md border mx-auto transition-colors",
+                            selected.has(t.id) ? "border-primary bg-primary text-white" : "border-line"
+                          )}
+                        >
+                          {selected.has(t.id) && <Check size={13} />}
+                        </button>
+                      </td>
+
+                      {/* Details & Merchant */}
+                      <td className="py-4 border-b border-line pl-2 align-middle cursor-pointer" onClick={() => toggleExpand(t.id)}>
+                        <div className="flex items-center gap-3">
+                          {/* Beautiful Merchant / Category Icon */}
+                          <span
+                            className="grid h-9 w-9 shrink-0 place-items-center rounded-xl font-bold text-sm"
+                            style={{
+                              background: meta ? `color-mix(in oklch, ${meta.hue} 15%, transparent)` : `rgba(37,99,235,0.1)`,
+                              color: meta?.hue ?? "var(--primary)"
+                            }}
+                          >
+                            <Icon size={16} strokeWidth={2.4} />
+                          </span>
+                          
+                          <div className="min-w-0 flex-1">
+                            <div className="font-bold text-sm text-ink truncate leading-tight">
+                              {t.note || "Uncategorized Merchant"}
+                            </div>
+                            <div className="text-xs text-muted mt-1 flex flex-wrap items-center gap-2">
+                              <span>{formatDate(t.date)}</span>
+                              <span className="h-3 w-px bg-line" />
+                              <span
+                                className="px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide"
+                                style={{
+                                  background: meta ? `color-mix(in oklch, ${meta.hue} 12%, transparent)` : `rgba(0,0,0,0.06)`,
+                                  color: meta?.hue ?? "var(--muted)"
+                                }}
+                              >
+                                {cat?.name || "Income"}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+
+                      {/* Account */}
+                      <td className="py-4 border-b border-line hidden sm:table-cell align-middle text-sm font-semibold text-muted">
+                        {accMap[t.accountId]?.name || "Cash Vault"}
+                      </td>
+
+                      {/* Amount */}
+                      <td className="py-4 border-b border-line text-right align-middle font-bold text-sm">
+                        <span className={t.type === "income" ? "text-[#22C55E]" : "text-[#EF4444]"}>
+                          {t.type === "income" ? "+" : "-"} {formatMoney(t.amount, user.currency)}
+                        </span>
+                      </td>
+
+                      {/* Actions */}
+                      <td className="py-4 border-b border-line text-center pr-4 align-middle">
+                        <div className="flex items-center justify-center gap-1">
+                          <button
+                            onClick={() => toggleExpand(t.id)}
+                            className="p-1.5 rounded-lg text-muted hover:bg-surface-2 transition-colors"
+                            aria-label="Expand details"
+                          >
+                            {isExpanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+                          </button>
+                          <button
+                            onClick={() => setConfirmId(t.id)}
+                            aria-label="Delete transaction"
+                            className="p-1.5 rounded-lg text-muted hover:bg-danger/10 hover:text-danger transition-colors"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {visible < filtered.length && (
-        <div className="mt-4 flex justify-center">
-          <Button variant="soft" onClick={() => setVisible((v) => v + PAGE)}>
-            Load more ({filtered.length - visible})
+        <div className="mt-6 flex justify-center pb-8">
+          <Button variant="soft" onClick={() => setVisible((v) => v + PAGE)} className="text-xs px-5 h-10 font-bold">
+            Load More Transactions ({filtered.length - visible} remaining)
           </Button>
         </div>
       )}
 
+      {/* Confirmation Modals */}
       <ConfirmDialog
         open={!!confirmId}
-        title="Delete transaction?"
-        message="This will remove the transaction and revert its effect on the account balance."
+        title="Delete transaction ledger entry?"
+        message="This operation will permanently delete the transaction record and adjust the target account's balance."
         onConfirm={() => {
           if (confirmId) deleteTransaction(confirmId);
           setConfirmId(null);
-          toast("Transaction deleted", "success");
+          toast("Ledger entry removed", "success");
         }}
         onCancel={() => setConfirmId(null)}
       />
       <ConfirmDialog
         open={confirmBulk}
         title={`Delete ${selected.size} transactions?`}
-        message="This cannot be undone and will adjust account balances."
+        message="Are you certain you want to remove the selected ledger items? This will permanently revert all corresponding account balances."
         onConfirm={deleteSelected}
         onCancel={() => setConfirmBulk(false)}
       />
     </AppShell>
   );
 }
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -8,7 +8,8 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/Button";
 import { BentoGrid, BentoCard } from "@/components/Bento";
 import { CountUp } from "@/components/CountUp";
-import { CategoryPie, MiniTrend } from "@/components/charts/lazy";
+import { CategoryPie } from "@/components/charts/lazy";
+import { MiniTrend } from "@/components/charts/lazy";
 import { useStore } from "@/lib/store";
 import { netWorth, monthTotals, topCategory } from "@/lib/selectors";
 import { formatMoney } from "@/lib/format";
@@ -79,8 +80,8 @@ export default function LandingPage() {
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.12 }}
           className="mx-auto mt-5 max-w-xl text-pretty text-lg text-muted"
         >
-          Finboard turns income, expenses and budgets into a maximalist bento
-          dashboard that stays ruthlessly legible where the numbers matter.
+          Finboard turns income, expenses, and budgets into a beautiful,
+          editorial personal finance workspace that keeps your story simple and clear.
         </motion.p>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -184,10 +185,10 @@ export default function LandingPage() {
 
       {/* CTA */}
       <section className="relative z-10 mx-auto max-w-6xl px-5 py-12">
-        <div className="card relative overflow-hidden bg-primary p-10 text-center text-on-primary">
+        <div className="card relative overflow-hidden bg-primary p-10 text-center text-white">
           <div aria-hidden className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-white/20 blur-2xl" />
           <h2 className="display text-[clamp(1.8rem,5vw,3rem)]">Stop guessing. Start seeing.</h2>
-          <p className="mx-auto mt-3 max-w-md text-on-primary opacity-80">
+          <p className="mx-auto mt-3 max-w-md text-white/80">
             Spin up your dashboard in a minute. It&apos;s free, it&apos;s bold, and it&apos;s yours.
           </p>
           <Link href="/signup" className="mt-6 inline-block">
@@ -212,3 +213,4 @@ export default function LandingPage() {
     </div>
   );
 }
+

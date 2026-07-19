@@ -1,4 +1,4 @@
-export function Skeleton({ className = "" }: { className?: string }) {
+﻿export function Skeleton({ className = "" }: { className?: string }) {
   return (
     <div
       className={`relative overflow-hidden rounded-xl bg-surface-2 ${className}`}
@@ -21,3 +21,4 @@ export function SkeletonCard({ className = "" }: { className?: string }) {
     </div>
   );
 }
+

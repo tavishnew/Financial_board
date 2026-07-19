@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/Button";
 
@@ -17,3 +17,4 @@ export default function NotFound() {
     </div>
   );
 }
+

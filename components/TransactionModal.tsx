@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
@@ -106,7 +106,7 @@ export function TransactionModal({
                   onClick={() => setType(t)}
                   className={cn(
                     "rounded-xl py-2 text-sm font-semibold capitalize transition-colors",
-                    type === t ? "bg-primary text-on-primary" : "text-muted hover:text-ink"
+                    type === t ? "bg-primary text-white" : "text-muted hover:text-ink"
                   )}
                 >
                   {t}
@@ -204,3 +204,4 @@ export function TransactionModal({
     document.body
   );
 }
+

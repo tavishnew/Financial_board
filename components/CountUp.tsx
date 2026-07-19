@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useRef, useState } from "react";
 import { animate, useReducedMotion } from "framer-motion";
@@ -32,3 +32,4 @@ export function CountUp({ value, duration = 1.1, format, className }: CountUpPro
 
   return <span className={className}>{format ? format(display) : Math.round(display).toString()}</span>;
 }
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { type ReactNode } from "react";
@@ -59,7 +59,7 @@ export function AuthLayout({
         </div>
         <div className="flex flex-1 items-center justify-center px-6 pb-12">
           <div className="w-full max-w-sm">
-            <h1 className="display text-3xl text-ink lg:hidden">{title}</h1>
+            <h2 className="display text-3xl text-ink">{title}</h2>
             <p className="mt-2 text-muted">{subtitle}</p>
             <div className="mt-8">{children}</div>
             <div className="mt-6 text-center text-sm text-muted">{footer}</div>
@@ -69,3 +69,4 @@ export function AuthLayout({
     </div>
   );
 }
+

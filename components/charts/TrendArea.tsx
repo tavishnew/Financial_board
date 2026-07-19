@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo } from "react";
 import {
@@ -64,3 +64,4 @@ export function TrendArea({ months = 6 }: { months?: number }) {
     </ResponsiveContainer>
   );
 }
+

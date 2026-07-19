@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
@@ -15,3 +15,4 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
     </button>
   );
 }
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
@@ -67,3 +67,4 @@ export function ConfirmDialog({
     document.body
   );
 }
+

@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
@@ -42,10 +42,11 @@ export default function PrivacyPage() {
           </section>
           <section>
             <h2 className="text-lg font-bold text-ink">Contact</h2>
-            <p>Questions? Reach us at privacy@finboard.app.</p>
+            <p>Questions? Reach us at privacy@Finboard.app.</p>
           </section>
         </div>
       </main>
     </div>
   );
 }
+

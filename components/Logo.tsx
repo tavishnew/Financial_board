@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { cn } from "@/lib/cn";
 
@@ -6,12 +6,12 @@ export function Logo({ size = 28, className }: { size?: number; className?: stri
   return (
     <span className={cn("inline-flex items-center gap-2", className)}>
       <svg width={size} height={size} viewBox="0 0 32 32" fill="none" aria-hidden="true">
-        <rect x="2" y="2" width="13" height="13" rx="4" fill="var(--primary)" />
-        <rect x="17" y="2" width="13" height="13" rx="4" fill="var(--accent)" />
-        <rect x="2" y="17" width="13" height="13" rx="4" fill="var(--accent)" />
-        <rect x="17" y="17" width="13" height="13" rx="4" fill="var(--primary)" />
+        <circle cx="16" cy="16" r="14" stroke="currentColor" strokeWidth="2.5" />
+        <path d="M10 20C12 15 20 15 22 12" stroke="var(--primary)" strokeWidth="3" strokeLinecap="round" />
+        <circle cx="22" cy="12" r="3" fill="var(--primary)" />
       </svg>
-      <span className="display text-lg font-extrabold tracking-tight text-ink">Finboard</span>
+      <span className="display text-lg font-extrabold tracking-tight">Finboard</span>
     </span>
   );
 }
+

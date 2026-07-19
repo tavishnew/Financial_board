@@ -1,12 +1,13 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
-import { ArrowUpRight, TrendingDown, Trophy } from "lucide-react";
+import { ArrowUpRight, TrendingDown, Trophy, Sparkles, AlertCircle, Calendar, CreditCard, ChevronRight } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { BentoGrid, BentoCard } from "@/components/Bento";
 import { CountUp } from "@/components/CountUp";
 import { ProgressBar } from "@/components/ProgressBar";
-import { CategoryPie, MiniTrend } from "@/components/charts/lazy";
+import { CategoryPie } from "@/components/charts/lazy";
+import { MiniTrend } from "@/components/charts/lazy";
 import { TransactionRow } from "@/components/TransactionRow";
 import { QuickAdd } from "@/components/QuickAdd";
 import { useStore } from "@/lib/store";
@@ -26,156 +27,251 @@ export default function DashboardPage() {
   const totals = monthTotals(transactions);
   const top = topCategory(transactions, categories);
   const topMeta = top ? CATEGORY_META[top.category.key] : null;
-  const recent = recentTransactions(transactions, 6);
-  const budgetsProgress = budgetProgress(transactions, budgets, categories).slice(0, 4);
+  const recent = recentTransactions(transactions, 5);
+  const budgetsProgress = budgetProgress(transactions, budgets, categories).slice(0, 3);
   const hour = new Date().getHours();
   const greet = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
 
+  // Calculate some simple insights
+  const savingsRate = totals.income ? Math.round((totals.net / totals.income) * 100) : 0;
+  const isHealthy = savingsRate >= 20;
+
   return (
     <AppShell>
-      <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+      {/* Welcome Hero / Editorial Header */}
+      <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-line pb-6">
         <div>
-          <div className="kicker">{greet}, {user.name}</div>
-          <h1 className="display text-3xl text-ink">Dashboard</h1>
+          <span className="kicker text-[#2563EB] font-bold">{greet}, {user.name}</span>
+          <h1 className="display text-4xl mt-1 tracking-tight text-ink font-extrabold">Your financial story</h1>
+          <p className="text-muted text-sm mt-1">Keep moving toward your goals · Here is where your money is going this month.</p>
         </div>
-        <QuickAdd />
+        <div className="flex items-center gap-3">
+          <Link href="/transactions">
+            <button className="h-10 px-4 rounded-xl border border-line bg-surface text-ink text-sm font-semibold hover:border-primary hover:text-primary transition-colors flex items-center gap-1.5 shadow-sm">
+              <Calendar size={15} /> Calendar View
+            </button>
+          </Link>
+          <QuickAdd />
+        </div>
       </div>
 
-      <BentoGrid>
-        {/* Hero net worth */}
-        <BentoCard className="col-span-12 md:col-span-7">
-          <div className="flex items-start justify-between">
-            <span className="kicker">Net worth</span>
-            <span className="rounded-pill bg-[color:var(--c-income)]/15 px-2.5 py-1 text-xs font-bold text-[color:var(--c-income)]">
-              ▲ {totals.income ? Math.round((totals.net / totals.income) * 100) : 0}% this month
-            </span>
-          </div>
-          <div className="display tabnum mt-2 text-[clamp(2.5rem,6vw,4rem)] text-ink">
-            <CountUp value={nw} format={(n) => formatMoney(n, user.currency)} />
-          </div>
-          <div className="mt-1 text-sm text-muted">
-            Across {accounts.filter((a) => !a.archived).length} active accounts
-          </div>
-          <div className="mt-4">
-            <MiniTrend />
-          </div>
-        </BentoCard>
-
-        {/* This month */}
-        <BentoCard className="col-span-12 md:col-span-5">
-          <span className="kicker">This month</span>
-          <div className="mt-3 space-y-4">
+      <div className="space-y-6">
+        {/* Asymmetrical Row 1: Net Worth + Snapshot */}
+        <div className="grid gap-6 md:grid-cols-12">
+          {/* Welcome Hero Card / Net Worth */}
+          <div className="md:col-span-8 card p-6 bg-white relative overflow-hidden flex flex-col justify-between min-h-[300px]">
+            <div className="absolute right-0 top-0 h-40 w-40 rounded-full bg-[#2563EB]/5 blur-2xl pointer-events-none" />
             <div>
-              <div className="flex items-center gap-1.5 text-sm text-muted">
-                <TrendingDown size={14} /> Spent
-              </div>
-              <div className="display tabnum text-2xl text-ink">
-                {formatMoney(totals.expense, user.currency)}
-              </div>
-            </div>
-            <div>
-              <div className="flex items-center gap-1.5 text-sm text-muted">
-                <ArrowUpRight size={14} className="text-[color:var(--c-income)]" /> Earned
-              </div>
-              <div className="display tabnum text-2xl text-[color:var(--c-income)]">
-                {formatMoney(totals.income, user.currency)}
-              </div>
-            </div>
-            {top && topMeta && (
-              <div className="flex items-center gap-3 rounded-2xl bg-surface-2 p-3">
-                <span
-                  className="grid h-10 w-10 place-items-center rounded-xl"
-                  style={{ background: `color-mix(in oklch, ${topMeta.hue} 18%, transparent)`, color: topMeta.hue }}
-                >
-                  <topMeta.icon size={20} strokeWidth={2.4} />
+              <div className="flex items-center justify-between">
+                <span className="kicker text-muted">Net Worth Overview</span>
+                <span className="rounded-pill bg-[#22C55E]/10 px-2.5 py-1 text-xs font-bold text-[#22C55E]">
+                  ▲ {savingsRate}% saved this month
                 </span>
-                <div className="text-sm">
-                  <div className="text-muted">Top category</div>
-                  <div className="font-bold text-ink">
+              </div>
+              <div className="display tabnum mt-3 text-[clamp(2.5rem,5vw,3.75rem)] text-ink leading-none">
+                <CountUp value={nw} format={(n) => formatMoney(n, user.currency)} />
+              </div>
+              <div className="mt-2 text-sm text-muted">
+                Across {accounts.filter((a) => !a.archived).length} active financial accounts
+              </div>
+            </div>
+            
+            <div className="mt-6">
+              <MiniTrend />
+            </div>
+          </div>
+
+          {/* Monthly Snapshot Card */}
+          <div className="md:col-span-4 card p-6 bg-white flex flex-col justify-between">
+            <div>
+              <span className="kicker text-muted">Monthly Snapshot</span>
+              
+              <div className="mt-4 space-y-4">
+                <div>
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-muted uppercase tracking-wider">
+                    <TrendingDown size={13} className="text-[#EF4444]" /> Spent
+                  </div>
+                  <div className="display tabnum text-2xl text-ink font-bold mt-0.5">
+                    {formatMoney(totals.expense, user.currency)}
+                  </div>
+                </div>
+                
+                <div className="border-t border-line my-2" />
+
+                <div>
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-muted uppercase tracking-wider">
+                    <ArrowUpRight size={13} className="text-[#22C55E]" /> Earned
+                  </div>
+                  <div className="display tabnum text-2xl text-[#22C55E] font-bold mt-0.5">
+                    {formatMoney(totals.income, user.currency)}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {top && topMeta && (
+              <div className="mt-4 flex items-center gap-2.5 rounded-xl bg-surface-2 p-2.5">
+                <span
+                  className="grid h-8 w-8 place-items-center rounded-lg"
+                  style={{ background: `color-mix(in oklch, ${topMeta.hue} 15%, transparent)`, color: topMeta.hue }}
+                >
+                  <topMeta.icon size={16} strokeWidth={2.4} />
+                </span>
+                <div className="text-xs min-w-0 flex-1">
+                  <div className="text-muted truncate">Top category</div>
+                  <div className="font-bold text-ink truncate">
                     {topMeta.name} · {formatMoney(top.amount, user.currency)}
                   </div>
                 </div>
               </div>
             )}
           </div>
-        </BentoCard>
+        </div>
 
-        {/* Budgets */}
-        <BentoCard className="col-span-12 md:col-span-7">
-          <div className="mb-4 flex items-center justify-between">
-            <span className="kicker">Budget progress</span>
-            <Link href="/budgets" className="text-sm font-semibold text-primary hover:underline">
-              Manage
-            </Link>
-          </div>
-          <div className="space-y-4">
-            {budgetsProgress.length === 0 && (
-              <p className="text-sm text-muted">No budgets yet — set some on the Budgets page.</p>
-            )}
-            {budgetsProgress.map((b) => {
-              const meta = b.category ? CATEGORY_META[b.category.key] : null;
-              return (
-                <div key={b.budget.id}>
-                  <div className="mb-1.5 flex items-center justify-between text-sm">
-                    <span className="font-semibold text-ink">{b.category?.name}</span>
-                    <span className="tabnum text-muted">
-                      {formatMoney(b.spent, user.currency)} / {formatMoney(b.limit, user.currency)}
-                    </span>
-                  </div>
-                  <ProgressBar value={b.pct} hue={meta?.hue ?? "var(--primary)"} />
-                </div>
-              );
-            })}
-          </div>
-        </BentoCard>
-
-        {/* Recent transactions */}
-        <BentoCard className="col-span-12 md:col-span-5">
-          <div className="mb-2 flex items-center justify-between">
-            <span className="kicker">Recent</span>
-            <Link href="/transactions" className="text-sm font-semibold text-primary hover:underline">
-              All
-            </Link>
-          </div>
-          <div className="divide-y divide-line">
-            {recent.map((t) => (
-              <TransactionRow key={t.id} txn={t} />
-            ))}
-          </div>
-        </BentoCard>
-
-        {/* Category breakdown */}
-        <BentoCard className="col-span-12 md:col-span-7">
-          <div className="mb-3 flex items-center justify-between">
-            <span className="kicker">Where it goes</span>
-            <span className="text-sm text-muted">This month</span>
-          </div>
-          <CategoryPie />
-        </BentoCard>
-
-        {/* Goals mini */}
-        <BentoCard className="col-span-12 md:col-span-5">
-          <div className="mb-3 flex items-center justify-between">
-            <span className="kicker flex items-center gap-1.5">
-              <Trophy size={13} /> Goals
+        {/* Row 2: Financial Health Insight Banner */}
+        <div className="card p-5 bg-[#2563EB]/5 border border-[#2563EB]/15 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-start gap-3">
+            <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#2563EB]/10 text-[#2563EB] shrink-0">
+              <Sparkles size={18} />
             </span>
-            <Link href="/goals" className="text-sm font-semibold text-primary hover:underline">
-              View
-            </Link>
+            <div>
+              <h3 className="font-bold text-ink text-sm">Financial Health Insight</h3>
+              <p className="text-xs text-muted mt-0.5">
+                {isHealthy 
+                  ? "Outstanding! You have maintained a premium savings rate above 20% this month. You're on target."
+                  : "Consider reviewing your optional subscription bills or budgets to increase your savings rate above 20%."}
+              </p>
+            </div>
           </div>
-          <div className="space-y-4">
-            {goals.slice(0, 3).map((g) => (
-              <div key={g.id}>
-                <div className="mb-1.5 flex items-center justify-between text-sm">
-                  <span className="font-semibold text-ink">{g.name}</span>
-                  <span className="tabnum text-muted">{pct(g.currentAmount, g.targetAmount)}%</span>
-                </div>
-                <ProgressBar value={pct(g.currentAmount, g.targetAmount)} hue="var(--c-savings)" />
+          <Link href="/analytics">
+            <button className="text-xs font-bold text-[#2563EB] hover:underline flex items-center gap-0.5 shrink-0">
+              View Analytics <ChevronRight size={14} />
+            </button>
+          </Link>
+        </div>
+
+        {/* Asymmetrical Row 3: Budgets & Savings Goals */}
+        <div className="grid gap-6 md:grid-cols-12">
+          {/* Budget progress */}
+          <div className="md:col-span-7 card p-6 bg-white">
+            <div className="mb-5 flex items-center justify-between">
+              <div>
+                <span className="kicker text-muted">Budget Progress</span>
+                <h3 className="text-lg font-bold text-ink">This month&apos;s progress</h3>
               </div>
-            ))}
+              <Link href="/budgets" className="text-xs font-bold text-primary hover:underline">
+                Manage Budgets
+              </Link>
+            </div>
+            
+            <div className="space-y-4">
+              {budgetsProgress.length === 0 && (
+                <p className="text-sm text-muted py-4 text-center">No budgets configured yet. Establish guardrails to track your limits.</p>
+              )}
+              {budgetsProgress.map((b) => {
+                const meta = b.category ? CATEGORY_META[b.category.key] : null;
+                return (
+                  <div key={b.budget.id} className="group">
+                    <div className="mb-1.5 flex items-center justify-between text-xs">
+                      <span className="font-semibold text-ink group-hover:text-primary transition-colors">{b.category?.name}</span>
+                      <span className="tabnum text-muted">
+                        {formatMoney(b.spent, user.currency)} of {formatMoney(b.limit, user.currency)}
+                      </span>
+                    </div>
+                    <ProgressBar value={b.pct} hue={meta?.hue ?? "var(--primary)"} />
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </BentoCard>
-      </BentoGrid>
+
+          {/* Savings Goals */}
+          <div className="md:col-span-5 card p-6 bg-white flex flex-col justify-between">
+            <div>
+              <div className="mb-4 flex items-center justify-between">
+                <div>
+                  <span className="kicker text-muted">Savings Goals</span>
+                  <h3 className="text-lg font-bold text-ink">Target milestones</h3>
+                </div>
+                <Link href="/goals" className="text-xs font-bold text-primary hover:underline">
+                  All Goals
+                </Link>
+              </div>
+              
+              <div className="space-y-4">
+                {goals.slice(0, 2).map((g) => {
+                  const p = pct(g.currentAmount, g.targetAmount);
+                  return (
+                    <div key={g.id}>
+                      <div className="mb-1.5 flex items-center justify-between text-xs">
+                        <span className="font-semibold text-ink">{g.name}</span>
+                        <span className="tabnum text-muted font-semibold">{p}% there</span>
+                      </div>
+                      <ProgressBar value={p} hue="var(--c-savings)" />
+                    </div>
+                  );
+                })}
+                {goals.length === 0 && (
+                  <p className="text-sm text-muted py-4 text-center">No savings goals created. Set your sights on something meaningful.</p>
+                )}
+              </div>
+            </div>
+
+            <div className="mt-4 pt-3 border-t border-line text-xs flex items-center gap-1.5 text-[#6B7280]">
+              <Trophy size={14} className="text-[#F59E0B]" />
+              <span>Watch your savings grow on target.</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Asymmetrical Row 4: Recent Transactions & Category Breakdown */}
+        <div className="grid gap-6 md:grid-cols-12">
+          {/* Category breakdown (editorial view) */}
+          <div className="md:col-span-7 card p-6 bg-white">
+            <div className="mb-4 flex items-center justify-between">
+              <div>
+                <span className="kicker text-muted">Allocation</span>
+                <h3 className="text-lg font-bold text-ink">Where your money is going</h3>
+              </div>
+              <span className="text-xs text-muted font-semibold">This Month</span>
+            </div>
+            
+            <div className="py-2 flex justify-center">
+              <CategoryPie />
+            </div>
+          </div>
+
+          {/* Recent transactions */}
+          <div className="md:col-span-5 card p-6 bg-white flex flex-col justify-between">
+            <div>
+              <div className="mb-4 flex items-center justify-between">
+                <div>
+                  <span className="kicker text-muted">Ledger</span>
+                  <h3 className="text-lg font-bold text-ink">Recent transactions</h3>
+                </div>
+                <Link href="/transactions" className="text-xs font-bold text-primary hover:underline">
+                  See Ledger
+                </Link>
+              </div>
+              
+              <div className="divide-y divide-line max-h-[260px] overflow-y-auto pr-1">
+                {recent.map((t) => (
+                  <TransactionRow key={t.id} txn={t} />
+                ))}
+                {recent.length === 0 && (
+                  <p className="text-sm text-muted py-8 text-center">No transactions registered.</p>
+                )}
+              </div>
+            </div>
+
+            <div className="mt-4 pt-3 border-t border-line text-xs text-muted flex items-center justify-between">
+              <span>Updated in real-time</span>
+              <span className="font-bold text-primary">All secure</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </AppShell>
   );
 }
+

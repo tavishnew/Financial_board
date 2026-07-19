@@ -1,4 +1,4 @@
-import type { TooltipProps } from "recharts";
+﻿import type { TooltipProps } from "recharts";
 
 export function ChartTooltip({ active, payload, label }: TooltipProps<number, string>) {
   if (!active || !payload || payload.length === 0) return null;
@@ -20,3 +20,4 @@ export function ChartTooltip({ active, payload, label }: TooltipProps<number, st
     </div>
   );
 }
+

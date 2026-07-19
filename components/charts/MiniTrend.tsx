@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo } from "react";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, YAxis } from "recharts";
@@ -34,3 +34,4 @@ export function MiniTrend({ days = 14 }: { days?: number }) {
     </ResponsiveContainer>
   );
 }
+
