@@ -1,21 +1,24 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { ArrowRight, Wallet, PieChart, Target, Sparkles, ShieldCheck, Zap, Lock, Database, EyeOff } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/Button";
-import LandingHeader from "@/components/LandingHeader";
 import { BentoGrid, BentoCard } from "@/components/Bento";
 import { CountUp } from "@/components/CountUp";
-import { CategoryPie } from "@/components/charts/lazy";
-import { MiniTrend } from "@/components/charts/lazy";
 import { useStore } from "@/lib/store";
-import { FastMarketLottie } from "@/components/FastMarketLottie";
 import { netWorth, monthTotals, topCategory } from "@/lib/selectors";
 import { formatMoney } from "@/lib/format";
 import { CATEGORY_META } from "@/lib/categories";
 import { DEMO_TRANSACTIONS, DEMO_ACCOUNTS, DEMO_CATEGORIES } from "@/lib/demo";
+
+// Lazy load heavy components
+const LandingHeader = dynamic(() => import("@/components/LandingHeader").then(m => m.default), { ssr: true });
+const CategoryPie = dynamic(() => import("@/components/charts/lazy").then(m => m.CategoryPie), { ssr: false });
+const MiniTrend = dynamic(() => import("@/components/charts/lazy").then(m => m.MiniTrend), { ssr: false });
+const FastMarketLottie = dynamic(() => import("@/components/FastMarketLottie").then(m => m.FastMarketLottie), { ssr: false });
 
 const FEATURES = [
   { icon: Wallet, title: "Every account, one net worth", body: "Bank, card, cash and wallet — rolled into one honest number you can actually trust." },

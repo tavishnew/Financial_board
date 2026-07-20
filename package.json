@@ -10,8 +10,7 @@
     "typecheck": "tsc --noEmit",
     "db:generate": "prisma generate",
     "db:setup": "node scripts/setup-db.mjs",
-    "db:seed": "node scripts/setup-db.mjs",
-    "test": "vitest run"
+    "db:seed": "node scripts/setup-db.mjs"
   },
   "prisma": {
     "seed": "node scripts/setup-db.mjs"
@@ -47,7 +46,6 @@
     "prisma": "^5.18.0",
     "tailwindcss": "^3.4.7",
     "tsx": "^4.16.2",
-    "typescript": "^5.5.4",
-    "vitest": "^4.1.10"
+    "typescript": "^5.5.4"
   }
 }
