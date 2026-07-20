@@ -9,6 +9,7 @@ import { monthTotals } from "@/lib/selectors";
 import { formatMoney } from "@/lib/format";
 import { CATEGORY_META } from "@/lib/categories";
 import { cn } from "@/lib/cn";
+import { motion } from "framer-motion";
 
 export default function ReportsPage() {
   const { transactions, user, categories } = useStore();
@@ -75,10 +76,17 @@ export default function ReportsPage() {
             onClick={() => setActiveTab(tab)}
             className={cn(
               "pb-3 text-sm font-bold border-b-2 transition-colors capitalize",
-              activeTab === tab ? "border-primary text-primary" : "border-transparent text-muted hover:text-ink"
+              activeTab === tab ? "border-transparent text-primary" : "border-transparent text-muted hover:text-ink"
             )}
           >
             {tab === "tax" ? "Tax Summary" : `${tab} report`}
+            {activeTab === tab && (
+              <motion.span
+                layoutId="reports-tab-underline"
+                className="absolute -bottom-px left-0 right-0 h-0.5 rounded-full bg-primary"
+                transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+              />
+            )}
           </button>
         ))}
       </div>
@@ -86,7 +94,7 @@ export default function ReportsPage() {
       {/* Report views */}
       <div className="space-y-6">
         {activeTab === "monthly" && (
-          <div className="card p-6 bg-white space-y-6">
+          <div className="card p-6 bg-surface space-y-6">
             <div className="flex items-center justify-between border-b border-line pb-4">
               <div>
                 <h3 className="text-lg font-bold text-ink">Monthly Statement</h3>
@@ -102,7 +110,7 @@ export default function ReportsPage() {
                 <h4 className="text-xs font-bold uppercase tracking-wider text-muted">Receipts &amp; Credits</h4>
                 <div className="flex justify-between items-center text-sm border-b border-line py-2">
                   <span className="text-muted">Direct Deposits / Salary</span>
-                  <span className="font-bold text-[#22C55E]">{formatMoney(totals.income, user.currency)}</span>
+                  <span className="font-bold text-primary">{formatMoney(totals.income, user.currency)}</span>
                 </div>
                 <div className="flex justify-between items-center text-sm font-bold border-t border-line py-2 text-ink">
                   <span>Total Income</span>
@@ -114,7 +122,7 @@ export default function ReportsPage() {
                 <h4 className="text-xs font-bold uppercase tracking-wider text-muted">Debits &amp; Deductions</h4>
                 <div className="flex justify-between items-center text-sm border-b border-line py-2">
                   <span className="text-muted">Category Expenses</span>
-                  <span className="font-bold text-[#EF4444]">{formatMoney(totals.expense, user.currency)}</span>
+                  <span className="font-bold text-[#DC2626]">{formatMoney(totals.expense, user.currency)}</span>
                 </div>
                 <div className="flex justify-between items-center text-sm font-bold border-t border-line py-2 text-ink">
                   <span>Total Expense</span>
@@ -126,7 +134,7 @@ export default function ReportsPage() {
             <div className="border-t border-line pt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-surface-2 p-4 rounded-xl">
               <div>
                 <div className="text-xs font-bold text-muted uppercase tracking-wider">Net Retained Earnings</div>
-                <div className={cn("display text-2xl font-bold mt-1", totals.net >= 0 ? "text-[#22C55E]" : "text-[#EF4444]")}>
+                <div className={cn("display text-2xl font-bold mt-1", totals.net >= 0 ? "text-primary" : "text-[#DC2626]")}>
                   {formatMoney(totals.net, user.currency)}
                 </div>
               </div>
@@ -138,7 +146,7 @@ export default function ReportsPage() {
         )}
 
         {activeTab === "annual" && (
-          <div className="card p-6 bg-white space-y-6">
+          <div className="card p-6 bg-surface space-y-6">
             <div className="flex items-center justify-between border-b border-line pb-4">
               <div>
                 <h3 className="text-lg font-bold text-ink">Annual Projection</h3>
@@ -160,14 +168,14 @@ export default function ReportsPage() {
               </div>
               <div className="flex justify-between items-center border-t border-line pt-3 text-sm font-bold text-ink bg-surface-2 p-3 rounded-lg">
                 <span>Projected Net Annual Savings</span>
-                <span className="text-[#22C55E]">{formatMoney(totals.net * 12, user.currency)}</span>
+                <span className="text-primary">{formatMoney(totals.net * 12, user.currency)}</span>
               </div>
             </div>
           </div>
         )}
 
         {activeTab === "category" && (
-          <div className="card p-6 bg-white space-y-6">
+          <div className="card p-6 bg-surface space-y-6">
             <div className="flex items-center justify-between border-b border-line pb-4">
               <div>
                 <h3 className="text-lg font-bold text-ink">Category Expenditure Statement</h3>
@@ -199,7 +207,7 @@ export default function ReportsPage() {
         )}
 
         {activeTab === "tax" && (
-          <div className="card p-6 bg-white space-y-6">
+          <div className="card p-6 bg-surface space-y-6">
             <div className="flex items-center justify-between border-b border-line pb-4">
               <div>
                 <h3 className="text-lg font-bold text-ink">Tax Estimation Summary</h3>
@@ -229,7 +237,7 @@ export default function ReportsPage() {
               </div>
             </div>
 
-            <div className="text-xs text-muted flex items-start gap-2 bg-[#0E7C5B]/5 p-3 rounded-lg border border-[#0E7C5B]/10">
+            <div className="text-xs text-muted flex items-start gap-2 bg-primary/5 p-3 rounded-lg border border-primary/10">
               <Calculator size={14} className="text-primary mt-0.5 shrink-0" />
               <span>
                 Disclaimer: MoneyTrail tax reports are mathematical estimations for reference purposes only and do not constitute certified tax or legal advice.

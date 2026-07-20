@@ -4,7 +4,7 @@ import { forwardRef, type ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/cn";
 
 type Variant = "primary" | "ghost" | "soft" | "danger" | "outline";
-type Size = "sm" | "md" | "lg";
+type Size = "sm" | "md" | "lg" | "xl";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant;
@@ -24,6 +24,7 @@ const sizes: Record<Size, string> = {
   sm: "h-9 px-3 text-sm rounded-xl",
   md: "h-11 px-5 text-[0.95rem] rounded-2xl",
   lg: "h-13 px-7 text-base rounded-2xl",
+  xl: "h-14 px-8 text-base rounded-2xl min-w-[210px]",
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -31,7 +32,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     <button
       ref={ref}
       className={cn(
-        "inline-flex items-center justify-center gap-2 font-semibold tracking-tight transition-colors transition-transform duration-200 ease-out-quint disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98]",
+        "inline-flex items-center justify-center gap-2 font-semibold tracking-tight transition-colors transition-transform duration-150 ease-out-quint disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98]",
         variants[variant],
         sizes[size],
         className

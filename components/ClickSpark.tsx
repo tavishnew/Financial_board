@@ -45,7 +45,6 @@ export default function ClickSpark({
   className,
   children,
 }: ClickSparkProps) {
-  const containerRef = React.useRef<HTMLDivElement>(null);
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
   const sparksRef = React.useRef<Spark[]>([]);
   const easeRef = React.useRef<EasingFn>(EASINGS["ease-out"]);
@@ -58,8 +57,7 @@ export default function ClickSpark({
 
   React.useEffect(() => {
     const canvas = canvasRef.current;
-    const container = containerRef.current;
-    if (!canvas || !container) return;
+    if (!canvas) return;
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
@@ -69,12 +67,14 @@ export default function ClickSpark({
       window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 
     const resize = () => {
-      const rect = container.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
-      canvas.width = Math.max(1, Math.floor(rect.width * dpr));
-      canvas.height = Math.max(1, Math.floor(rect.height * dpr));
-      canvas.style.width = "100%";
-      canvas.style.height = "100%";
+      // Size the buffer from the canvas's *rendered* size so it always matches
+      // the viewport (no container-rect math, no stale-buffer scaling).
+      const w = Math.max(1, Math.floor(canvas.clientWidth * dpr));
+      const h = Math.max(1, Math.floor(canvas.clientHeight * dpr));
+      if (canvas.width === w && canvas.height === h) return;
+      canvas.width = w;
+      canvas.height = h;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
     resize();
@@ -82,7 +82,7 @@ export default function ClickSpark({
 
     const draw = (now: number) => {
       const ease = easeRef.current;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
       sparksRef.current = sparksRef.current.filter((s) => {
         const p = (now - s.startTime) / duration;
         if (p >= 1) return false;
@@ -115,7 +115,12 @@ export default function ClickSpark({
 
     const onPointerDown = (e: PointerEvent) => {
       if (reduced) return;
-      const rect = container.getBoundingClientRect();
+      // Re-sync the buffer to the current viewport, then draw at the raw
+      // pointer coordinates (the canvas is fixed and covers the viewport).
+      resize();
+      // Compute the pointer position relative to the canvas's own box so the
+      // burst always lands under the cursor, regardless of any offset.
+      const rect = canvas.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
       for (let i = 0; i < sparkCount; i++) {
@@ -133,26 +138,29 @@ export default function ClickSpark({
       startLoop();
     };
 
-    container.addEventListener("pointerdown", onPointerDown);
+    window.addEventListener("pointerdown", onPointerDown);
 
     return () => {
       window.removeEventListener("resize", resize);
-      container.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("pointerdown", onPointerDown);
       cancelAnimationFrame(rafRef.current);
       runningRef.current = false;
     };
   }, [sparkColor, sparkSize, sparkRadius, sparkCount, duration, extraScale]);
 
   return (
-    <div
-      ref={containerRef}
-      className={className}
-      style={{ position: "relative", width: "100%", minHeight: "100vh" }}
-    >
+    <div className={className} style={{ position: "relative", width: "100%", minHeight: "100vh" }}>
       <canvas
         ref={canvasRef}
         aria-hidden="true"
-        style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
+        style={{
+          position: "fixed",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          pointerEvents: "none",
+          zIndex: 60,
+        }}
       />
       {children}
     </div>

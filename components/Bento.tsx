@@ -10,8 +10,8 @@ const container = {
 };
 
 const item = {
-  hidden: { opacity: 0, y: 14 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
+  hidden: { opacity: 0, transform: "translateY(14px)" },
+  show: { opacity: 1, transform: "translateY(0px)", transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
 };
 
 export function BentoGrid({

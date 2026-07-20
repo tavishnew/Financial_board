@@ -63,32 +63,32 @@ export default function SignupPage() {
       <form onSubmit={submit} className="space-y-4">
         <Field icon={<UserIcon size={18} />} label="Name">
           <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="h-12 w-full bg-transparent text-ink outline-none"
-            placeholder="Tavis"
-            autoComplete="name"
-          />
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="h-12 w-full bg-transparent text-ink"
+              placeholder="Username"
+              autoComplete="name"
+            />
         </Field>
         <Field icon={<Mail size={18} />} label="Email">
           <input
             type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="h-12 w-full bg-transparent text-ink outline-none"
-            placeholder="you@email.com"
-            autoComplete="email"
-          />
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="h-12 w-full bg-transparent text-ink"
+              placeholder="you@email.com"
+              autoComplete="email"
+            />
         </Field>
         <Field icon={<Lock size={18} />} label="Password">
           <input
             type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="h-12 w-full bg-transparent text-ink outline-none"
-            placeholder="••••••••"
-            autoComplete="new-password"
-          />
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="h-12 w-full bg-transparent text-ink"
+              placeholder="••••••••"
+              autoComplete="new-password"
+            />
         </Field>
         <Button type="submit" className="w-full" disabled={loading}>
           Create account

@@ -20,17 +20,17 @@ interface ThemeContextValue {
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("light");
+  const [theme, setThemeState] = useState<Theme>("dark");
 
   useEffect(() => {
     const stored = (typeof window !== "undefined" && localStorage.getItem("ftheme")) as Theme | null;
-    const initial: Theme = stored ?? "light";
+    const initial: Theme = stored ?? "dark";
     setThemeState(initial);
   }, []);
 
   useEffect(() => {
     const root = document.documentElement;
-    root.classList.toggle("dark", theme === "dark");
+    root.classList.toggle("dark", theme === "light");
     localStorage.setItem("ftheme", theme);
   }, [theme]);
 
@@ -53,8 +53,7 @@ export const themeInitScript = `
 (function(){
   try {
     var t = localStorage.getItem('ftheme');
-    if (!t) t = 'light';
-    if (t === 'dark') document.documentElement.classList.add('dark');
+    if (t === 'light') document.documentElement.classList.add('dark');
   } catch (e) {}
 })();
 `;

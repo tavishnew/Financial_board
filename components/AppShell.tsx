@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -18,6 +18,9 @@ import {
   X,
   Search,
   ChevronDown,
+  ChevronUp,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { Logo } from "./Logo";
 import { ThemeToggle } from "./ThemeToggle";
@@ -43,17 +46,43 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { transactions, budgets, categories, user } = useStore();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [alertsOpen, setAlertsOpen] = useState(false);
+  const [bottomNavOpen, setBottomNavOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Topbar is hidden by default and reveals only when the pointer nears the top
+  // edge (or hovers the bar itself), then smoothly slides away. On small/touch
+  // screens it stays visible since there is no hover.
+  const [topNear, setTopNear] = useState(false);
+  const [topHover, setTopHover] = useState(false);
+  const topVisible = topNear || topHover;
+
+  useEffect(() => {
+    const onMove = (e: MouseEvent) => setTopNear(e.clientY <= 96);
+    window.addEventListener("mousemove", onMove, { passive: true });
+    return () => window.removeEventListener("mousemove", onMove);
+  }, []);
 
   const alerts = budgetProgress(transactions, budgets, categories).filter((b) => b.over);
 
   return (
-    <div className="min-h-screen lg:grid lg:grid-cols-[260px_1fr] bg-[#F8F7F4] dark:bg-[#0F172A]">
+    <div className="min-h-screen bg-[var(--bg)]">
       {/* Sidebar (desktop) */}
-        <aside className="sticky top-0 hidden h-screen flex-col bg-[#1A1611] border-r border-[#2C2620] p-5 lg:flex">
+        <aside
+          className={
+            "fixed left-0 top-0 z-40 hidden h-screen flex-col bg-[#1A1611] border-r border-[#2C2620] p-5 transition-[transform,opacity] duration-300 ease-out-quint lg:flex " +
+            (sidebarOpen
+              ? "translate-x-0 opacity-100"
+              : "-translate-x-full opacity-0 pointer-events-none")
+          }
+        >
         {/* Workspace switcher / Profile Menu */}
         <div className="flex items-center gap-3 px-2 py-3 border-b border-white/10 mb-4 text-white">
-          <div className="h-9 w-9 rounded-xl bg-[#0E7C5B] text-white flex items-center justify-center font-bold text-sm shadow-md shadow-[#0E7C5B]/25">
-            {user.name?.charAt(0).toUpperCase()}
+          <div className="h-9 w-9 shrink-0 overflow-hidden rounded-xl bg-primary text-white flex items-center justify-center font-bold text-sm shadow-md shadow-primary/25">
+            {user.avatarUrl ? (
+              <img src={user.avatarUrl} alt="" className="h-full w-full object-cover" />
+            ) : (
+              user.name?.charAt(0).toUpperCase()
+            )}
           </div>
           <div className="flex-1 min-w-0">
             <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Personal Space</div>
@@ -68,7 +97,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <input
             type="text"
             placeholder="Search workspace..."
-          className="w-full h-9 pl-9 pr-3 rounded-xl bg-white/5 border border-white/10 text-xs text-white placeholder-slate-400 outline-none focus:border-[#0E7C5B] focus:ring-1 focus:ring-[#0E7C5B]/50 transition-colors"
+          className="w-full h-9 pl-9 pr-3 rounded-xl bg-white/5 border border-white/10 text-xs text-white placeholder-slate-400 outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-colors"
           />
         </div>
 
@@ -84,7 +113,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 className={cn(
                   "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors duration-200",
                   active
-                    ? "bg-[#0E7C5B] text-white shadow-lg shadow-[#0E7C5B]/20"
+                    ? "bg-primary text-white shadow-lg shadow-primary/20"
                     : "text-slate-300 hover:bg-white/5 hover:text-white"
                 )}
               >
@@ -98,7 +127,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         {/* Footer info in sidebar */}
         <div className="pt-4 border-t border-white/10 mt-auto">
           <div className="flex items-center gap-2 px-2 text-slate-400 text-xs font-semibold">
-            <Logo size={20} className="text-[#0E7C5B]" />
+            <Logo size={20} className="text-primary" />
             <span>MoneyTrail v1.0</span>
           </div>
         </div>
@@ -110,7 +139,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
             <aside className="absolute left-0 top-0 h-full w-64 bg-[#1A1611] p-5 flex flex-col">
             <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-4 text-white">
-              <Logo className="text-[#0E7C5B]" />
+              <Logo className="text-primary" />
               <button onClick={() => setMobileOpen(false)} className="text-slate-400 hover:text-white">
                 <X size={20} />
               </button>
@@ -137,7 +166,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                     onClick={() => setMobileOpen(false)}
                     className={cn(
                       "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors",
-                      active ? "bg-[#0E7C5B] text-white" : "text-slate-300 hover:bg-white/5"
+                      active ? "bg-primary text-white" : "text-slate-300 hover:bg-white/5"
                     )}
                   >
                     <Icon size={18} strokeWidth={2.3} />
@@ -154,15 +183,32 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
       )}
 
-      <div className="flex min-h-screen flex-col">
-        {/* Topbar */}
-        <header className="sticky top-0 z-40 flex h-16 items-center gap-3 border-b border-line bg-surface/80 px-4 py-3 backdrop-blur lg:px-8">
+      <div className={cn("flex min-h-screen flex-col lg:transition-[padding] lg:duration-300", sidebarOpen && "lg:pl-[260px]")}>
+      {/* Topbar — hidden until the pointer nears the top edge or hovers the bar */}
+      <header
+        onMouseEnter={() => setTopHover(true)}
+        onMouseLeave={() => setTopHover(false)}
+        className={
+          "sticky top-0 z-40 flex h-16 items-center gap-3 border-b border-line bg-surface/80 px-4 py-3 backdrop-blur transition-[transform,margin,opacity] duration-500 ease-out-quint lg:px-8 " +
+          (topVisible
+            ? "translate-y-0 opacity-100 mt-0"
+            : "md:-translate-y-full md:opacity-0 md:-mt-16 md:pointer-events-none")
+        }
+      >
           <button onClick={() => setMobileOpen(true)} className="text-ink lg:hidden" aria-label="Open menu">
             <Menu size={22} />
           </button>
+
+          <button
+            onClick={() => setSidebarOpen((v) => !v)}
+            className="hidden text-ink transition-colors hover:text-primary lg:inline-flex"
+            aria-label={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
+          >
+            {sidebarOpen ? <ChevronLeft size={22} /> : <ChevronRight size={22} />}
+          </button>
           
           <div className="hidden lg:flex items-center gap-2">
-            <span className="text-xs font-semibold px-2.5 py-1 rounded-pill bg-[#0E7C5B]/10 text-[#0E7C5B] tracking-wide uppercase">
+            <span className="text-xs font-semibold px-2.5 py-1 rounded-pill bg-primary/10 text-primary tracking-wide uppercase">
               Workspace
             </span>
           </div>
@@ -172,7 +218,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <div className="relative">
             <button
               onClick={() => setAlertsOpen((v) => !v)}
-              className="relative grid h-10 w-10 place-items-center rounded-xl border border-line bg-surface text-ink hover:border-[#0E7C5B] hover:text-[#0E7C5B] transition-colors"
+              className="relative grid h-10 w-10 place-items-center rounded-xl border border-line bg-surface text-ink hover:border-primary hover:text-primary transition-colors"
               aria-label="Notifications"
             >
               <Bell size={18} strokeWidth={2.3} />
@@ -208,8 +254,15 @@ export function AppShell({ children }: { children: ReactNode }) {
           <div className="mx-auto w-full max-w-5xl">{children}</div>
         </main>
 
-        {/* Mobile bottom nav */}
-        <nav className="sticky bottom-0 z-40 flex h-16 items-center justify-around border-t border-line bg-surface/90 px-2 py-2 backdrop-blur lg:hidden">
+        {/* Mobile bottom nav — hidden until toggled via the arrow button */}
+        <nav
+          className={
+            "fixed bottom-0 inset-x-0 z-40 flex h-16 items-center justify-around gap-2 border-t border-line bg-surface/90 px-2 pr-14 py-2 backdrop-blur transition-[transform,opacity] duration-300 ease-out-quint lg:hidden " +
+            (bottomNavOpen
+              ? "translate-y-0 opacity-100"
+              : "-translate-y-full opacity-0 pointer-events-none")
+          }
+        >
           {NAV.slice(0, 5).map((item) => {
             const active = pathname === item.href;
             const Icon = item.icon;
@@ -217,9 +270,10 @@ export function AppShell({ children }: { children: ReactNode }) {
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={() => setBottomNavOpen(false)}
                 className={cn(
                   "grid h-11 w-14 place-items-center rounded-xl transition-colors",
-                  active ? "bg-[#0E7C5B] text-white shadow-md shadow-[#0E7C5B]/25" : "text-muted hover:text-ink"
+                  active ? "bg-primary text-white shadow-md shadow-primary/25" : "text-muted hover:text-ink"
                 )}
               >
                 <Icon size={20} strokeWidth={2.3} />
@@ -227,6 +281,21 @@ export function AppShell({ children }: { children: ReactNode }) {
             );
           })}
         </nav>
+
+        {/* Arrow toggle for the mobile bottom nav */}
+        <button
+          type="button"
+          onClick={() => setBottomNavOpen((v) => !v)}
+          aria-label={bottomNavOpen ? "Hide navigation" : "Show navigation"}
+          aria-expanded={bottomNavOpen}
+          className="fixed bottom-4 right-4 z-50 grid h-12 w-12 place-items-center rounded-full bg-primary text-white shadow-lg shadow-primary/30 transition-transform duration-300 ease-out-quint lg:hidden"
+        >
+          <ChevronUp
+            size={22}
+            strokeWidth={2.4}
+            className={cn("transition-transform duration-300", bottomNavOpen ? "rotate-180" : "")}
+          />
+        </button>
       </div>
     </div>
   );

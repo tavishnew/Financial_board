@@ -20,7 +20,12 @@ export const authOptions: NextAuthOptions = {
         if (!user?.passwordHash) return null;
         const ok = await bcrypt.compare(credentials.password, user.passwordHash);
         if (!ok) return null;
-        return { id: user.id, name: user.name ?? "", email: user.email, image: user.avatarUrl ?? undefined };
+        // NOTE: do not include `image`/avatarUrl here. Avatars are stored as
+        // multi-MB base64 data URLs; baking one into the JWT session cookie
+        // blows past Node's ~16 KB request-header limit and makes every
+        // authenticated request fail with HTTP 431. The UI reads the avatar
+        // from the app store / /api/user instead.
+        return { id: user.id, name: user.name ?? "", email: user.email };
       },
     }),
     ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
@@ -38,6 +43,11 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.currency = (user as { currency?: string }).currency;
       }
+      // Keep the session cookie small: never persist the avatar (a large
+      // base64 data URL) or any other bulky field, or authenticated requests
+      // will fail with HTTP 431 (request header too large).
+      delete token.picture;
+      delete token.image;
       return token;
     },
     async session({ session, token }) {

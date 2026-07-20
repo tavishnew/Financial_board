@@ -9,10 +9,10 @@ import { formatCompact, formatMoney } from "@/lib/format";
 import { ChartTooltip } from "./ChartTooltip";
 import { DEMO_TRANSACTIONS, DEMO_CATEGORIES } from "@/lib/demo";
 
-export function CategoryPie({ monthsAgo = 0 }: { monthsAgo?: number }) {
+export function CategoryPie({ monthsAgo = 0, demo = false }: { monthsAgo?: number; demo?: boolean }) {
   const { transactions, categories, user } = useStore();
-  const txns = transactions.length ? transactions : DEMO_TRANSACTIONS;
-  const cats = categories.length ? categories : DEMO_CATEGORIES;
+  const txns = demo ? DEMO_TRANSACTIONS : transactions;
+  const cats = demo ? DEMO_CATEGORIES : categories;
 
   const data = useMemo(() => {
     const spend = categorySpend(txns, monthsAgo);

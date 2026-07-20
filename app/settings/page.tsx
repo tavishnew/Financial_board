@@ -1,7 +1,7 @@
-﻿"use client";
+"use client";
 
-import { useState } from "react";
-import { Plus, Sun, Moon, Bell, Download, Trash2, Check, User, Shield, CreditCard, Sparkles, AlertCircle } from "lucide-react";
+import { useState, useRef, type ChangeEvent } from "react";
+import { Plus, Sun, Moon, Bell, Download, Trash2, Check, User, Shield, CreditCard, Sparkles, AlertCircle, LogOut } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/Button";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
@@ -11,11 +11,13 @@ import { useToast } from "@/components/Toast";
 import { CATEGORY_META, CATEGORY_ORDER } from "@/lib/categories";
 import { cn } from "@/lib/cn";
 import type { CategoryKey } from "@/lib/types";
+import { motion } from "framer-motion";
+import { signOut } from "next-auth/react";
 
 const CURRENCIES = ["INR", "USD", "EUR", "GBP"];
 
 export default function SettingsPage() {
-  const { user, categories, setCurrency, addCategory, deleteCategory } = useStore();
+  const { user, categories, setCurrency, addCategory, deleteCategory, setAvatar } = useStore();
   const { theme, setTheme } = useTheme();
   const toast = useToast();
 
@@ -24,6 +26,8 @@ export default function SettingsPage() {
   const [newCatName, setNewCatName] = useState("");
   const [newCatStyle, setNewCatStyle] = useState<CategoryKey>("shopping");
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [confirmLogout, setConfirmLogout] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
   const [notif, setNotif] = useState({ overspend: true, billDue: true, weekly: false });
   const [currentTab, setCurrentTab] = useState<"general" | "categories" | "accounts">("general");
 
@@ -45,6 +49,32 @@ export default function SettingsPage() {
     toast("Category registered successfully", "success");
   }
 
+  async function handleAvatar(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // allow re-selecting the same file
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      toast("Please choose an image file", "error");
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      toast("Image must be under 2 MB", "error");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const url = reader.result as string;
+      await setAvatar(url);
+      toast("Profile photo updated", "success");
+    };
+    reader.onerror = () => toast("Could not read the file", "error");
+    reader.readAsDataURL(file);
+  }
+
+  function handleLogout() {
+    signOut({ callbackUrl: "/login" });
+  }
+
   return (
     <AppShell>
       {/* Title block */}
@@ -60,28 +90,49 @@ export default function SettingsPage() {
           onClick={() => setCurrentTab("general")}
           className={cn(
             "pb-3 text-sm font-bold border-b-2 transition-colors",
-            currentTab === "general" ? "border-primary text-primary" : "border-transparent text-muted hover:text-ink"
+            currentTab === "general" ? "border-transparent text-primary" : "border-transparent text-muted hover:text-ink"
           )}
         >
           General &amp; Profile
+          {currentTab === "general" && (
+            <motion.span
+              layoutId="settings-tab-underline"
+              className="absolute -bottom-px left-0 right-0 h-0.5 rounded-full bg-primary"
+              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            />
+          )}
         </button>
         <button
           onClick={() => setCurrentTab("categories")}
           className={cn(
             "pb-3 text-sm font-bold border-b-2 transition-colors",
-            currentTab === "categories" ? "border-primary text-primary" : "border-transparent text-muted hover:text-ink"
+            currentTab === "categories" ? "border-transparent text-primary" : "border-transparent text-muted hover:text-ink"
           )}
         >
           Custom Categories
+          {currentTab === "categories" && (
+            <motion.span
+              layoutId="settings-tab-underline"
+              className="absolute -bottom-px left-0 right-0 h-0.5 rounded-full bg-primary"
+              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            />
+          )}
         </button>
         <button
           onClick={() => setCurrentTab("accounts")}
           className={cn(
             "pb-3 text-sm font-bold border-b-2 transition-colors",
-            currentTab === "accounts" ? "border-primary text-primary" : "border-transparent text-muted hover:text-ink"
+            currentTab === "accounts" ? "border-transparent text-primary" : "border-transparent text-muted hover:text-ink"
           )}
         >
           Connected Accounts
+          {currentTab === "accounts" && (
+            <motion.span
+              layoutId="settings-tab-underline"
+              className="absolute -bottom-px left-0 right-0 h-0.5 rounded-full bg-primary"
+              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            />
+          )}
         </button>
       </div>
 
@@ -99,10 +150,17 @@ export default function SettingsPage() {
                 </Field>
               </div>
               <div className="mt-4 flex items-center gap-3">
-                <span className="grid h-12 w-12 place-items-center rounded-xl bg-primary/10 text-primary text-lg font-bold">
-                  {name.charAt(0).toUpperCase()}
+                <span className="grid h-12 w-12 place-items-center overflow-hidden rounded-xl bg-primary/10 text-primary text-lg font-bold">
+                  {user.avatarUrl ? (
+                    <img src={user.avatarUrl} alt="" className="h-full w-full object-cover" />
+                  ) : (
+                    name.charAt(0).toUpperCase()
+                  )}
                 </span>
-                <Button variant="outline" size="sm" className="h-9 text-xs">Upload New Avatar</Button>
+                <Button variant="outline" size="sm" className="h-9 text-xs" onClick={() => fileRef.current?.click()}>
+                  Upload New Avatar
+                </Button>
+                <input ref={fileRef} type="file" accept="image/*" hidden onChange={handleAvatar} />
               </div>
             </Section>
 
@@ -161,7 +219,7 @@ export default function SettingsPage() {
                     )}
                     aria-pressed={notif[n.key]}
                   >
-                    <span className={cn("absolute top-0.5 h-5 w-5 rounded-full bg-white transition-[left,box-shadow] shadow-sm", notif[n.key] ? "left-5.5" : "left-0.5")} />
+                    <span className={cn("absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform", notif[n.key] ? "translate-x-5" : "")} />
                   </button>
                 </div>
               ))}
@@ -173,10 +231,17 @@ export default function SettingsPage() {
                 <Button variant="outline" onClick={exportData} className="text-xs h-10 font-bold">
                   <Download size={14} /> Export Workspace JSON
                 </Button>
-                <Button variant="danger" onClick={() => setConfirmDelete(true)} className="text-xs h-10 font-bold bg-[#EF4444] text-white">
+                <Button variant="danger" onClick={() => setConfirmDelete(true)} className="text-xs h-10 font-bold bg-[#DC2626] text-white">
                   <Trash2 size={14} /> Permanently Delete Account
                 </Button>
               </div>
+            </Section>
+
+            {/* Session & Security */}
+            <Section title="Session & Security" desc="Sign out of your MoneyTrail workspace on this device.">
+              <Button variant="outline" onClick={() => setConfirmLogout(true)} className="text-xs h-10 font-bold">
+                <LogOut size={14} /> Log out
+              </Button>
             </Section>
           </>
         )}
@@ -234,7 +299,7 @@ export default function SettingsPage() {
                     <div className="text-xs text-muted">Checking &amp; Savings feeds active</div>
                   </div>
                 </div>
-                <span className="text-[10px] font-bold text-[#22C55E] bg-[#22C55E]/10 px-2 py-0.5 rounded uppercase">Connected</span>
+                <span className="text-[10px] font-bold text-primary bg-[#22C55E]/10 px-2 py-0.5 rounded uppercase">Connected</span>
               </div>
               
               <div className="card p-4 flex items-center justify-between bg-surface-2">
@@ -247,7 +312,7 @@ export default function SettingsPage() {
                     <div className="text-xs text-muted">Credit line feed active</div>
                   </div>
                 </div>
-                <span className="text-[10px] font-bold text-[#22C55E] bg-[#22C55E]/10 px-2 py-0.5 rounded uppercase">Connected</span>
+                <span className="text-[10px] font-bold text-primary bg-[#22C55E]/10 px-2 py-0.5 rounded uppercase">Connected</span>
               </div>
             </div>
 
@@ -256,7 +321,7 @@ export default function SettingsPage() {
                 <Plus size={14} /> Connect New Institution
               </Button>
               <span className="text-xs text-muted flex items-center gap-1">
-                <Shield size={12} className="text-[#22C55E]" /> 256-bit bank level secure encryption.
+                <Shield size={12} className="text-primary" /> 256-bit bank level secure encryption.
               </span>
             </div>
           </Section>
@@ -271,13 +336,21 @@ export default function SettingsPage() {
         onConfirm={() => { setConfirmDelete(false); toast("Account data deletion simulation triggered.", "info"); }}
         onCancel={() => setConfirmDelete(false)}
       />
+      <ConfirmDialog
+        open={confirmLogout}
+        title="Log out of MoneyTrail?"
+        message="You'll be returned to the sign-in screen. Any unsaved changes will be lost."
+        confirmLabel="Log out"
+        onConfirm={() => { setConfirmLogout(false); handleLogout(); }}
+        onCancel={() => setConfirmLogout(false)}
+      />
     </AppShell>
   );
 }
 
 function Section({ title, desc, children }: { title: string; desc: string; children: React.ReactNode }) {
   return (
-    <section className="card p-6 bg-white border border-line">
+    <section className="card p-6 bg-surface border border-line">
       <h2 className="text-base font-bold text-ink leading-tight">{title}</h2>
       <p className="text-xs text-muted mt-0.5 mb-5">{desc}</p>
       {children}

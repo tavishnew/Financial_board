@@ -6,6 +6,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -18,6 +19,9 @@ import type {
   Goal,
   Transaction,
   User,
+  Holding,
+  Trade,
+  TradeType,
 } from "./types";
 import { useToast } from "@/components/Toast";
 
@@ -37,6 +41,8 @@ interface StoreState {
   transactions: Transaction[];
   budgets: Budget[];
   goals: Goal[];
+  holdings: Holding[];
+  trades: Trade[];
 }
 
 interface StoreContextValue extends StoreState {
@@ -53,6 +59,10 @@ interface StoreContextValue extends StoreState {
   updateGoal: (id: string, patch: Partial<Goal>) => Promise<void>;
   deleteGoal: (id: string) => Promise<void>;
   setCurrency: (code: string) => Promise<void>;
+  setAvatar: (url: string) => Promise<void>;
+  addHolding: (h: { symbol: string; name: string; shares: number; avgCost: number }) => Promise<void>;
+  deleteHolding: (id: string) => Promise<void>;
+  addTrade: (id: string, t: { type: TradeType; shares: number; price: number; note?: string }) => Promise<void>;
 }
 
 const StoreContext = createContext<StoreContextValue | null>(null);
@@ -64,6 +74,8 @@ const emptyState: StoreState = {
   transactions: [],
   budgets: [],
   goals: [],
+  holdings: [],
+  trades: [],
 };
 
 async function loadJSON<T>(url: string): Promise<T> {
@@ -76,6 +88,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const { data: session, status } = useSession();
   const toast = useToast();
   const [state, setState] = useState<StoreState>(emptyState);
+  const stateRef = useRef<StoreState>(emptyState);
+  stateRef.current = state;
 
   // Hydrate from the session-protected API once authenticated.
   useEffect(() => {
@@ -97,7 +111,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           name: session.user.name ?? "You",
           currency: (session.user as { currency?: string }).currency ?? "USD",
         };
-        setState({ user, accounts, categories, transactions, budgets, goals });
+        let holdings: Holding[] = [];
+        try {
+          holdings = await loadJSON<Holding[]>("/api/holdings");
+        } catch {
+          holdings = [];
+        }
+        if (cancelled) return;
+        setState({ user, accounts, categories, transactions, budgets, goals, holdings, trades: [] });
       } catch {
         toast("Could not load your data", "error");
       }
@@ -327,6 +348,138 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     []
   );
 
+  const setAvatar = useCallback(
+    async (url: string) => {
+      setState((s) => ({ ...s, user: { ...s.user, avatarUrl: url } }));
+      try {
+        await fetch("/api/user", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ avatarUrl: url }),
+        });
+      } catch {
+        /* non-fatal: keep optimistic local value */
+      }
+    },
+    []
+  );
+
+  const addHolding = useCallback(
+    async (h: { symbol: string; name: string; shares: number; avgCost: number }) => {
+      const tempId = `temp-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+      const optimistic: Holding = {
+        id: tempId,
+        symbol: h.symbol.trim().toUpperCase(),
+        name: h.name.trim(),
+        shares: h.shares,
+        avgCost: h.avgCost,
+        createdAt: new Date().toISOString(),
+      };
+      // Optimistic insert.
+      setState((s) => ({ ...s, holdings: [...s.holdings, optimistic] }));
+      try {
+        const res = await fetch("/api/holdings", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(h),
+        });
+        if (!res.ok) throw new Error("create failed");
+        const created = (await res.json()) as Holding;
+        setState((s) => ({
+          ...s,
+          holdings: s.holdings.map((x) => (x.id === tempId ? created : x)),
+        }));
+      } catch {
+        setState((s) => ({ ...s, holdings: s.holdings.filter((x) => x.id !== tempId) }));
+        toast("Could not add investment", "error");
+      }
+    },
+    [toast]
+  );
+
+  const deleteHolding = useCallback(
+    async (id: string) => {
+      const snapshot = stateRef.current.holdings;
+      const target = snapshot.find((h) => h.id === id);
+      if (!target) return;
+      // Optimistic remove.
+      setState((s) => ({ ...s, holdings: s.holdings.filter((h) => h.id !== id) }));
+      try {
+        const res = await fetch(`/api/holdings/${id}`, { method: "DELETE" });
+        if (!res.ok) throw new Error("delete failed");
+      } catch {
+        setState((s) => ({ ...s, holdings: snapshot }));
+        toast("Could not remove investment", "error");
+      }
+    },
+    [toast]
+  );
+
+  const addTrade = useCallback(
+    async (id: string, t: { type: TradeType; shares: number; price: number; note?: string }) => {
+      const snapshot = stateRef.current.holdings;
+      const holding = snapshot.find((h) => h.id === id);
+      if (!holding) return;
+
+      // Optimistically compute the next holding state.
+      let nextShares: number;
+      let nextAvg: number;
+      if (t.type === "buy") {
+        nextShares = holding.shares + t.shares;
+        nextAvg = (holding.shares * holding.avgCost + t.shares * t.price) / nextShares;
+      } else {
+        nextShares = holding.shares - t.shares;
+        nextAvg = holding.avgCost;
+      }
+      const sellAll = t.type === "sell" && Math.abs(t.shares - holding.shares) < 1e-9;
+      setState((s) => ({
+        ...s,
+        holdings: s.holdings
+          .map((h) => (h.id === id ? { ...h, shares: nextShares, avgCost: nextAvg } : h))
+          .filter((h) => !(sellAll && h.id === id)),
+      }));
+
+      try {
+        const res = await fetch(`/api/holdings/${id}/trades`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(t),
+        });
+        if (!res.ok) throw new Error("trade failed");
+        const data = (await res.json()) as { deleted?: boolean; symbol?: string } & Holding;
+        setState((s) => {
+          if (data.deleted) {
+            return { ...s, holdings: s.holdings.filter((h) => h.id !== id), trades: [...s.trades, localTrade(holding, t)] };
+          }
+          const merged: Holding = { ...data, shares: data.shares, avgCost: data.avgCost };
+          return {
+            ...s,
+            holdings: s.holdings.map((h) => (h.id === id ? merged : h)),
+            trades: [...s.trades, localTrade(holding, t)],
+          };
+        });
+      } catch {
+        setState((s) => ({ ...s, holdings: snapshot }));
+        toast("Could not record trade", "error");
+      }
+    },
+    [toast]
+  );
+
+  // Build a local Trade record for state (the server persists the real one).
+  function localTrade(holding: Holding, t: { type: TradeType; shares: number; price: number; note?: string }): Trade {
+    return {
+      id: `local-${Date.now()}`,
+      holdingId: holding.id,
+      symbol: holding.symbol,
+      type: t.type,
+      shares: t.shares,
+      price: t.price,
+      note: t.note,
+      date: new Date().toISOString(),
+    };
+  }
+
   const value = useMemo<StoreContextValue>(
     () => ({
       ...state,
@@ -343,6 +496,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       updateGoal,
       deleteGoal,
       setCurrency,
+      setAvatar,
+      addHolding,
+      deleteHolding,
+      addTrade,
     }),
     [
       state,
@@ -359,6 +516,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       updateGoal,
       deleteGoal,
       setCurrency,
+      addHolding,
+      deleteHolding,
+      addTrade,
     ]
   );
 

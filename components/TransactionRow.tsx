@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { Wallet } from "lucide-react";
 import { useStore } from "@/lib/store";
@@ -37,7 +37,7 @@ export function TransactionRow({ txn }: { txn: Transaction }) {
       <div
         className={cn(
           "tabnum shrink-0 text-sm font-bold",
-          isIncome ? "text-[color:var(--c-income)]" : "text-ink"
+          isIncome ? "text-primary" : "text-ink"
         )}
       >
         {formatMoney(isIncome ? txn.amount : -txn.amount, user.currency, { signed: true })}

@@ -20,7 +20,7 @@ const config: Config = {
         "primary-press": "var(--primary-press)",
         accent: "var(--accent)",
         positive: "var(--c-income)",
-        danger: "var(--c-bills)",
+        danger: "#DC2626",
         onPrimary: "var(--on-primary)",
       },
       fontFamily: {

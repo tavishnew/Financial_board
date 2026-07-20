@@ -50,9 +50,9 @@ export default function GoalsPage() {
       </div>
 
       {/* Goal insights & recommendations card */}
-      <div className="card p-5 bg-[#0E7C5B]/5 border border-[#0E7C5B]/15 mb-6">
+      <div className="card p-5 bg-primary/5 border border-primary/15 mb-6">
         <div className="flex items-start gap-3">
-          <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#0E7C5B]/10 text-[#0E7C5B] shrink-0">
+          <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary/10 text-primary shrink-0">
             <Trophy size={18} />
           </span>
           <div>
@@ -67,7 +67,7 @@ export default function GoalsPage() {
       </div>
 
       {showAdd && (
-        <div className="card mb-6 flex flex-wrap items-end gap-4 p-5 bg-white">
+        <div className="card mb-6 flex flex-wrap items-end gap-4 p-5 bg-surface">
           <div className="flex-1 min-w-[160px]">
             <label className="mb-1 block text-xs font-bold uppercase text-ink">Goal name</label>
             <input
@@ -137,13 +137,13 @@ export default function GoalsPage() {
             : "Milestone: Just started";
 
           return (
-            <div key={g.id} className="card p-5 bg-white hover:border-[#0E7C5B]/40 flex flex-col justify-between min-h-[250px]">
+            <div key={g.id} className="card p-5 bg-surface hover:border-primary/40 flex flex-col justify-between min-h-[250px]">
               <div>
                 <div className="flex items-start justify-between">
                   <span className={cn(
                     "grid h-11 w-11 place-items-center rounded-2xl",
                     isFinished 
-                      ? "bg-[#22C55E]/15 text-[#22C55E]" 
+                      ? "bg-[#22C55E]/15 text-primary" 
                       : "bg-[#14B8A6]/15 text-[#14B8A6]"
                   )}>
                     {isFinished ? <CheckCircle size={22} strokeWidth={2.3} /> : <Target size={22} strokeWidth={2.3} />}

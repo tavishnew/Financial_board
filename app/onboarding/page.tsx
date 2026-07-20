@@ -83,7 +83,7 @@ export default function OnboardingPage() {
           ))}
         </div>
 
-        <motion.div key={step} initial={reduce ? { opacity: 0 } : { opacity: 0, x: 20 }} animate={reduce ? { opacity: 1 } : { opacity: 1, x: 0 }} transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}>
+        <motion.div key={step} initial={reduce ? { opacity: 0 } : { opacity: 0, transform: "translateX(20px)" }} animate={reduce ? { opacity: 1 } : { opacity: 1, transform: "translateX(0px)" }} transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}>
           {step === 0 && (
             <div>
               <h1 className="display text-3xl text-ink">Pick your currency</h1>

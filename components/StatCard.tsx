@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { type LucideIcon } from "lucide-react";
 import { CountUp } from "./CountUp";
@@ -53,7 +53,7 @@ export function StatCard({
             <span
               className={cn(
                 "tabnum font-semibold",
-                positive ? "text-[color:var(--c-income)]" : "text-[color:var(--c-bills)]"
+                positive ? "text-primary" : "text-[color:var(--c-bills)]"
               )}
             >
               {positive ? "▲" : "▼"} {Math.abs(delta).toFixed(1)}%

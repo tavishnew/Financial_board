@@ -7,36 +7,36 @@
   --font-body: "Hanken Grotesque", ui-sans-serif, system-ui, sans-serif;
   --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
 
-  /* Light mode (default) */
-  --bg: #FBF7F0;
-  --surface: #FFFFFF;
-  --surface-2: #F4EEDF;
-  --line: #E8DFCE;
-  --ink: #211C16;
-  --muted: #6E6457;
-  --primary: #0E7C5B;
-  --primary-press: #0B6349;
-  --accent: #C2883B;
+  /* Dark (default) */
+  --bg: oklch(0.15 0.01 50);
+  --surface: oklch(0.20 0.012 50);
+  --surface-2: oklch(0.25 0.014 50);
+  --line: oklch(0.30 0.01 50);
+  --ink: oklch(0.92 0 0);
+  --muted: oklch(0.72 0.012 50);
+  --primary: oklch(0.68 0.18 282);
+  --primary-press: oklch(0.62 0.19 282);
+  --accent: oklch(0.78 0.14 85);
   --on-primary: #FFFFFF;
-  --shadow-card: 0 4px 20px -2px rgba(33, 28, 22, 0.06), 0 2px 6px -1px rgba(33, 28, 22, 0.04);
-  --shadow-card-hover: 0 10px 30px -4px rgba(33, 28, 22, 0.1), 0 4px 12px -2px rgba(33, 28, 22, 0.05);
-  --shadow-glow: 0 0 0 1px rgba(14, 124, 91, 0.18), 0 4px 12px rgba(14, 124, 91, 0.14);
+  --shadow-card: 0 1px 2px oklch(0 0 0 / 0.5), 0 10px 30px oklch(0 0 0 / 0.45);
+  --shadow-card-hover: 0 2px 6px oklch(0 0 0 / 0.55), 0 22px 54px oklch(0 0 0 / 0.6);
+  --shadow-glow: 0 0 0 1px oklch(0.68 0.18 282 / 0.5), 0 14px 48px oklch(0.68 0.18 282 / 0.35);
 }
 
 .dark {
-  --bg: #14110D;
-  --surface: #1F1B16;
-  --surface-2: #2C2620;
-  --line: #332D26;
-  --ink: #F7F2E9;
-  --muted: #A89C8C;
-  --primary: #0E7C5B;
-  --primary-press: #0B6349;
-  --accent: #C2883B;
+  --bg: oklch(0.95 0.022 68);
+  --surface: oklch(0.98 0.012 70);
+  --surface-2: oklch(0.93 0.016 66);
+  --line: oklch(0.87 0.012 65);
+  --ink: oklch(0.22 0.012 50);
+  --muted: oklch(0.45 0.012 55);
+  --primary: oklch(0.50 0.19 282);
+  --primary-press: oklch(0.44 0.20 282);
+  --accent: oklch(0.68 0.16 85);
   --on-primary: #FFFFFF;
-  --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.35);
-  --shadow-card-hover: 0 10px 30px -4px rgba(0, 0, 0, 0.45);
-  --shadow-glow: 0 0 0 1px rgba(14, 124, 91, 0.28), 0 4px 12px rgba(14, 124, 91, 0.18);
+  --shadow-card: 0 1px 2px oklch(0.2 0.02 50 / 0.06), 0 8px 24px oklch(0.2 0.02 50 / 0.08);
+  --shadow-card-hover: 0 2px 4px oklch(0.2 0.02 50 / 0.08), 0 18px 44px oklch(0.2 0.02 50 / 0.14);
+  --shadow-glow: 0 0 0 1px oklch(0.50 0.19 282 / 0.4), 0 12px 40px oklch(0.50 0.19 282 / 0.28);
 }
 
 /* Fixed category hues (stable across themes) */
@@ -63,6 +63,7 @@ html {
 body {
   background: var(--bg);
   color: var(--ink);
+  cursor: default;
   font-family: var(--font-body);
   font-feature-settings: "cv11", "ss01";
   -webkit-font-smoothing: antialiased;
@@ -118,7 +119,7 @@ body {
     border: 1px solid var(--line);
     border-radius: 20px;
     box-shadow: var(--shadow-card);
-    transition: all 0.3s var(--ease-out-quint);
+    transition: transform 0.3s var(--ease-out-quint), box-shadow 0.3s var(--ease-out-quint);
   }
   .card:hover {
     transform: translateY(-2px);
@@ -201,8 +202,38 @@ body {
   50% { transform: translate3d(12px, 16px, 0); }
   100% { transform: translate3d(0, 0, 0); }
 }
-.animate-drift { animation: drift 9s ease-in-out infinite; }
-.animate-drift-alt { animation: drift-alt 11s ease-in-out infinite; }
+.animate-drift { animation: drift 9s linear infinite; }
+.animate-drift-alt { animation: drift-alt 11s linear infinite; }
+
+/* ===== Hero Lottie theming (MoneyTrail indigo/gold) ===== */
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.08); }
+}
+/* Rotating gradient ring that traces the hero panel edge in brand colors */
+.hero-ring {
+  padding: 1.5px;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    color-mix(in oklch, var(--primary) 85%, transparent) 90deg,
+    color-mix(in oklch, var(--accent) 85%, transparent) 200deg,
+    transparent 320deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: spin-slow 16s linear infinite;
+}
+/* Pulsing primary glow behind the animation */
+.hero-glow {
+  animation: glow-pulse 5.5s ease-in-out infinite;
+}
 
 @media (prefers-reduced-motion: reduce) {
   *,

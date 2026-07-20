@@ -16,6 +16,9 @@
     "plugins": [{ "name": "next" }],
     "paths": {
       "@/*": ["./*"]
+      ,
+      "three/addons/*": ["./node_modules/@types/three/examples/jsm/*"],
+      "three/examples/jsm/*": ["./node_modules/@types/three/examples/jsm/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

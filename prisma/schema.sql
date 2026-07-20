@@ -142,3 +142,52 @@ ALTER TABLE "Goal" ADD CONSTRAINT "Goal_userId_fkey" FOREIGN KEY ("userId") REFE
 -- AddForeignKey
 ALTER TABLE "RecurringTxn" ADD CONSTRAINT "RecurringTxn_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
+-- CreateTable
+CREATE TABLE "Holding" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "symbol" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "shares" DECIMAL(65,30) NOT NULL DEFAULT 0,
+    "avgCost" DECIMAL(65,30) NOT NULL DEFAULT 0,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Holding_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Trade" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "holdingId" TEXT,
+    "symbol" TEXT NOT NULL,
+    "type" TEXT NOT NULL,
+    "shares" DECIMAL(65,30) NOT NULL,
+    "price" DECIMAL(65,30) NOT NULL,
+    "note" TEXT,
+    "date" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Trade_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateIndex
+CREATE INDEX "Holding_userId_idx" ON "Holding"("userId");
+
+-- CreateIndex
+CREATE INDEX "Holding_userId_symbol_idx" ON "Holding"("userId", "symbol");
+
+-- CreateIndex
+CREATE INDEX "Trade_userId_idx" ON "Trade"("userId");
+
+-- CreateIndex
+CREATE INDEX "Trade_holdingId_idx" ON "Trade"("holdingId");
+
+-- AddForeignKey
+ALTER TABLE "Holding" ADD CONSTRAINT "Holding_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Trade" ADD CONSTRAINT "Trade_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Trade" ADD CONSTRAINT "Trade_holdingId_fkey" FOREIGN KEY ("holdingId") REFERENCES "Holding"("id") ON DELETE CASCADE ON UPDATE CASCADE;

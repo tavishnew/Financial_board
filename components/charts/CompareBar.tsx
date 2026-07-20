@@ -17,9 +17,9 @@ import { DEMO_TRANSACTIONS } from "@/lib/demo";
 import { formatCompact } from "@/lib/format";
 import { ChartTooltip } from "./ChartTooltip";
 
-export function CompareBar({ months = 6 }: { months?: number }) {
+export function CompareBar({ months = 6, demo = false }: { months?: number; demo?: boolean }) {
   const { transactions, user } = useStore();
-  const txns = transactions.length ? transactions : DEMO_TRANSACTIONS;
+  const txns = demo ? DEMO_TRANSACTIONS : transactions;
   const data = useMemo(() => monthlyTrend(txns, months), [txns]);
 
   return (

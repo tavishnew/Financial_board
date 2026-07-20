@@ -186,31 +186,31 @@ export default function TransactionsPage() {
 
       {/* Monthly summary analytics cards */}
       <div className="grid gap-4 sm:grid-cols-3 mb-6">
-        <div className="card p-5 bg-white flex items-center justify-between">
+        <div className="card p-5 bg-surface flex items-center justify-between">
           <div>
             <div className="text-xs font-bold text-muted uppercase tracking-wider flex items-center gap-1">
-              <ArrowUpRight size={14} className="text-[#22C55E]" /> Total Received
+              <ArrowUpRight size={14} className="text-primary" /> Total Received
             </div>
-            <div className="display tabnum text-xl mt-1 text-[#22C55E] font-bold">
+            <div className="display tabnum text-xl mt-1 text-primary font-bold">
               {formatMoney(monthlySummary.income, user.currency)}
             </div>
           </div>
-          <span className="text-[10px] bg-[#22C55E]/10 text-[#22C55E] px-2 py-0.5 rounded font-bold uppercase">Filtered</span>
+          <span className="text-[10px] bg-[#22C55E]/10 text-primary px-2 py-0.5 rounded font-bold uppercase">Filtered</span>
         </div>
         
-        <div className="card p-5 bg-white flex items-center justify-between">
+        <div className="card p-5 bg-surface flex items-center justify-between">
           <div>
             <div className="text-xs font-bold text-muted uppercase tracking-wider flex items-center gap-1">
-              <TrendingDown size={14} className="text-[#EF4444]" /> Total Spent
+              <TrendingDown size={14} className="text-[#DC2626]" /> Total Spent
             </div>
-            <div className="display tabnum text-xl mt-1 text-[#EF4444] font-bold">
+            <div className="display tabnum text-xl mt-1 text-[#DC2626] font-bold">
               {formatMoney(monthlySummary.expense, user.currency)}
             </div>
           </div>
-          <span className="text-[10px] bg-[#EF4444]/10 text-[#EF4444] px-2 py-0.5 rounded font-bold uppercase">Filtered</span>
+          <span className="text-[10px] bg-[#DC2626]/10 text-[#DC2626] px-2 py-0.5 rounded font-bold uppercase">Filtered</span>
         </div>
 
-        <div className="card p-5 bg-white flex items-center justify-between">
+        <div className="card p-5 bg-surface flex items-center justify-between">
           <div>
             <div className="text-xs font-bold text-muted uppercase tracking-wider flex items-center gap-1">
               <ArrowRightLeft size={14} className="text-primary" /> Net Cash Flow
@@ -224,7 +224,7 @@ export default function TransactionsPage() {
       </div>
 
       {/* Modern filters workspace toolbar */}
-      <div className="card p-4 bg-white mb-6 space-y-3">
+      <div className="card p-4 bg-surface mb-6 space-y-3">
         <div className="flex items-center gap-2 rounded-xl bg-surface-2 border border-line px-3 py-1">
           <Search size={16} className="text-muted shrink-0" />
           <input
@@ -283,7 +283,7 @@ export default function TransactionsPage() {
 
       {/* Bulk actions panel */}
       {selected.size > 0 && (
-        <div className="mb-4 flex items-center justify-between rounded-xl border border-[#0E7C5B]/25 bg-[#0E7C5B]/5 px-4 py-3 shadow-sm animate-pulse">
+        <div className="mb-4 flex items-center justify-between rounded-xl border border-primary/25 bg-primary/5 px-4 py-3 shadow-sm animate-pulse">
           <span className="text-xs font-bold text-ink">{selected.size} items selected</span>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={() => setSelected(new Set())} className="h-8 text-xs font-bold">
@@ -297,11 +297,11 @@ export default function TransactionsPage() {
       )}
 
       {/* Transactions list container */}
-      <div className="card overflow-hidden bg-white shadow-sm border border-line">
+      <div className="card overflow-hidden bg-surface shadow-sm border border-line">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse table-fixed">
             {/* Sticky Table Headers */}
-            <thead className="bg-[#FBF7F0] border-b border-line text-xs font-bold uppercase text-muted tracking-wider sticky top-0 z-10">
+              <thead className="bg-surface-2 border-b border-line text-xs font-bold uppercase text-muted tracking-wider sticky top-0 z-10">
               <tr>
                 <th className="w-12 py-3.5 pl-4 text-center">
                   <button
@@ -397,7 +397,7 @@ export default function TransactionsPage() {
 
                       {/* Amount */}
                       <td className="py-4 border-b border-line text-right align-middle font-bold text-sm">
-                        <span className={t.type === "income" ? "text-[#22C55E]" : "text-[#EF4444]"}>
+                        <span className={t.type === "income" ? "text-primary" : "text-[#DC2626]"}>
                           {t.type === "income" ? "+" : "-"} {formatMoney(t.amount, user.currency)}
                         </span>
                       </td>

@@ -24,7 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
     <body>
       <ClickSpark
-        sparkColor="#C2883B"
+      sparkColor="#D9A93C"
         sparkSize={10}
         sparkRadius={15}
         sparkCount={8}

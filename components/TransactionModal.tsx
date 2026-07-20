@@ -84,9 +84,9 @@ export function TransactionModal({
         >
           <motion.div
             className="card w-full max-w-md p-6"
-            initial={reduce ? { opacity: 0 } : { opacity: 0, y: 20, scale: 0.97 }}
-            animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }}
-            exit={reduce ? { opacity: 0 } : { opacity: 0, y: 20, scale: 0.97, transition: { duration: 0.18, ease: [0.22, 1, 0.36, 1] } }}
+            initial={reduce ? { opacity: 0 } : { opacity: 0, transform: "translateY(20px) scale(0.97)" }}
+            animate={reduce ? { opacity: 1 } : { opacity: 1, transform: "translateY(0px) scale(1)" }}
+            exit={reduce ? { opacity: 0 } : { opacity: 0, transform: "translateY(20px) scale(0.97)", transition: { duration: 0.18, ease: [0.22, 1, 0.36, 1] } }}
             transition={reduce ? { duration: 0.18 } : { duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             onClick={(e) => e.stopPropagation()}
             role="dialog"

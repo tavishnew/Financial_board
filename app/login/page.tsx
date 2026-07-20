@@ -12,7 +12,7 @@ import { useToast } from "@/components/Toast";
 export default function LoginPage() {
   const router = useRouter();
   const toast = useToast();
-  const [email, setEmail] = useState("tavis@finance.app");
+  const [email, setEmail] = useState("your@gmail.com");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 

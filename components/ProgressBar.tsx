@@ -28,10 +28,10 @@ export function ProgressBar({
       aria-valuemax={100}
     >
       <motion.div
-        className="h-full rounded-full"
-        style={{ background: fill }}
-        initial={reduce ? false : { width: 0 }}
-        animate={{ width: `${clamped}%` }}
+        className="h-full w-full rounded-full"
+        style={{ background: fill, transformOrigin: "left center" }}
+        initial={reduce ? false : { transform: "scaleX(0)" }}
+        animate={{ transform: `scaleX(${clamped / 100})` }}
         transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
       />
     </div>

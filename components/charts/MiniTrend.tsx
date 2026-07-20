@@ -7,9 +7,9 @@ import { dailyTrend } from "@/lib/selectors";
 import { DEMO_TRANSACTIONS } from "@/lib/demo";
 import { ChartTooltip } from "./ChartTooltip";
 
-export function MiniTrend({ days = 14 }: { days?: number }) {
+export function MiniTrend({ days = 14, demo = false }: { days?: number; demo?: boolean }) {
   const { transactions } = useStore();
-  const txns = transactions.length ? transactions : DEMO_TRANSACTIONS;
+  const txns = demo ? DEMO_TRANSACTIONS : transactions;
   const data = useMemo(() => dailyTrend(txns, days), [txns, days]);
 
   return (

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import {
   createContext,
@@ -40,16 +40,16 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             <motion.div
               key={t.id}
               layout
-              initial={reduce ? { opacity: 0 } : { opacity: 0, x: 40, scale: 0.95 }}
-              animate={reduce ? { opacity: 1 } : { opacity: 1, x: 0, scale: 1 }}
-              exit={reduce ? { opacity: 0 } : { opacity: 0, x: 40, scale: 0.95, transition: { duration: 0.18, ease: [0.22, 1, 0.36, 1] } }}
+              initial={reduce ? { opacity: 0 } : { opacity: 0, transform: "translateX(40px) scale(0.95)" }}
+              animate={reduce ? { opacity: 1 } : { opacity: 1, transform: "translateX(0px) scale(1)" }}
+              exit={reduce ? { opacity: 0 } : { opacity: 0, transform: "translateX(40px) scale(0.95)", transition: { duration: 0.18, ease: [0.22, 1, 0.36, 1] } }}
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
               className="pointer-events-auto flex items-center gap-3 rounded-2xl border border-line bg-surface px-4 py-3 shadow-card"
             >
               <span
                 className={cn(
                   "grid h-8 w-8 shrink-0 place-items-center rounded-xl",
-                  t.type === "success" && "bg-[color:var(--c-income)]/15 text-[color:var(--c-income)]",
+                  t.type === "success" && "bg-[color:var(--c-income)]/15 text-primary",
                   t.type === "error" && "bg-[color:var(--c-bills)]/15 text-[color:var(--c-bills)]",
                   t.type === "info" && "bg-accent/15 text-accent"
                 )}

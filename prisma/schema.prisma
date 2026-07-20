@@ -26,6 +26,8 @@ model User {
   budgets       Budget[]
   goals         Goal[]
   recurring     RecurringTxn[]
+  holdings      Holding[]
+  trades        Trade[]
 }
 
 model Account {
@@ -117,4 +119,38 @@ model RecurringTxn {
   active      Boolean   @default(true)
 
   @@index([userId])
+}
+
+model Holding {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  symbol    String
+  name      String
+  shares    Decimal  @default(0)
+  avgCost   Decimal  @default(0)
+  createdAt DateTime @default(now())
+
+  trades    Trade[]
+
+  @@index([userId])
+  @@index([userId, symbol])
+}
+
+model Trade {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  holdingId String?
+  holding   Holding? @relation(fields: [holdingId], references: [id], onDelete: Cascade)
+  symbol    String
+  type      String   // buy | sell
+  shares    Decimal
+  price     Decimal
+  note      String?
+  date      DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([holdingId])
 }

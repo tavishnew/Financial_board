@@ -62,25 +62,25 @@ export default function AnalyticsPage() {
 
       {/* Editorial Summary / Story Cards */}
       <div className="mb-6 grid gap-4 sm:grid-cols-3">
-        <div className="card p-5 bg-white">
+        <div className="card p-5 bg-surface">
           <div className="text-xs font-bold text-muted uppercase tracking-wider">Net Earned (This Month)</div>
-          <div className="display tabnum mt-1.5 text-2xl text-[#22C55E] font-bold">
+          <div className="display tabnum mt-1.5 text-2xl text-primary font-bold">
             {formatMoney(totals.income, user.currency)}
           </div>
           <div className="text-xs text-muted mt-2">Received across all verified deposit streams</div>
         </div>
         
-        <div className="card p-5 bg-white">
+        <div className="card p-5 bg-surface">
           <div className="text-xs font-bold text-muted uppercase tracking-wider">Net Spent (This Month)</div>
-          <div className="display tabnum mt-1.5 text-2xl text-[#EF4444] font-bold">
+          <div className="display tabnum mt-1.5 text-2xl text-[#DC2626] font-bold">
             {formatMoney(totals.expense, user.currency)}
           </div>
           <div className="text-xs text-muted mt-2">Deducted from connected banks &amp; credit lines</div>
         </div>
 
-        <div className="card p-5 bg-white">
+        <div className="card p-5 bg-surface">
           <div className="text-xs font-bold text-muted uppercase tracking-wider">Saved (This Month)</div>
-          <div className="display tabnum mt-1.5 text-2xl text-[#0E7C5B] font-bold">
+          <div className="display tabnum mt-1.5 text-2xl text-primary font-bold">
             {formatMoney(totals.net, user.currency)}
           </div>
           <div className="text-xs text-muted mt-2">Added directly to your cumulative Net Worth</div>
@@ -88,9 +88,9 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Intelligent Narrative Story & Forecast card */}
-      <div className="card p-6 bg-[#0E7C5B]/5 border border-[#0E7C5B]/15 mb-6">
+      <div className="card p-6 bg-primary/5 border border-primary/15 mb-6">
         <div className="flex items-start gap-4">
-          <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[#0E7C5B]/10 text-[#0E7C5B] shrink-0">
+          <span className="grid h-12 w-12 place-items-center rounded-2xl bg-primary/10 text-primary shrink-0">
             <Sparkles size={20} />
           </span>
           <div>
@@ -99,7 +99,7 @@ export default function AnalyticsPage() {
               Based on this month&apos;s positive cash flow, you maintained a stellar savings rate of{" "}
               <span className="font-bold text-ink">{savingsRate}%</span>. 
               At your current velocity, you are on track to save approximately{" "}
-              <span className="font-bold text-[#22C55E]">{formatMoney(yearlyForecast, user.currency)}</span> over the next 12 months. 
+              <span className="font-bold text-primary">{formatMoney(yearlyForecast, user.currency)}</span> over the next 12 months. 
               This will increase your current net worth to{" "}
               <span className="font-bold text-ink">{formatMoney(currentNetWorth + yearlyForecast, user.currency)}</span>. 
               Keep moving toward your goals!
@@ -109,7 +109,7 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Primary Comparative Chart */}
-      <BentoCard className="mb-6 p-6 bg-white" hover={false}>
+      <BentoCard className="mb-6 p-6 bg-surface" hover={false}>
         <div className="mb-4 flex items-center justify-between">
           <div>
             <span className="kicker text-muted">Income Comparison</span>
@@ -122,7 +122,7 @@ export default function AnalyticsPage() {
 
       {/* Secondary split analysis */}
       <div className="grid gap-6 lg:grid-cols-2">
-        <BentoCard hover={false} className="p-6 bg-white">
+        <BentoCard hover={false} className="p-6 bg-surface">
           <div className="mb-4 flex items-center justify-between">
             <div>
               <span className="kicker text-muted">Cash Flow Trend</span>
@@ -133,7 +133,7 @@ export default function AnalyticsPage() {
           <TrendArea months={range} />
         </BentoCard>
         
-        <BentoCard hover={false} className="p-6 bg-white">
+        <BentoCard hover={false} className="p-6 bg-surface">
           <div className="mb-4 flex items-center justify-between">
             <div>
               <span className="kicker text-muted">Category Split</span>

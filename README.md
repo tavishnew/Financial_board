@@ -63,9 +63,9 @@ All `/api/*` routes are session-protected (see `middleware.ts`):
 - Auth: `/api/auth/*` (NextAuth credentials + optional Google)
 
 ## Design
-See `PRODUCT.md` (strategy) and `DESIGN.md` (hex tokens, type scale, motion). **Light by
-default** with a full dark mode; the app-shell sidebar is always dark espresso (`#1A1611`). Identity is an
-editorial forest-green primary (`#0E7C5B`) with a brass accent (`#C2883B`), set on warm cream paper. Category hues are fixed
+See `PRODUCT.md` (strategy) and `DESIGN.md` (OKLCH tokens, type scale, motion). **Dark by
+default** with a full light mode; the app-shell sidebar is always dark espresso (`#1A1611`). Identity is a
+premium indigo-violet primary (`oklch(0.68 0.18 282)`) with a gold accent (`oklch(0.78 0.14 85)`), set on near-black. Category hues are fixed
 and reused across charts, tags, and budget bars.
 
 ## Scripts

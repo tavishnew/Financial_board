@@ -6,6 +6,7 @@ export interface User {
   email: string;
   name: string;
   currency: string;
+  avatarUrl?: string;
 }
 
 export interface Account {
@@ -57,4 +58,26 @@ export interface Goal {
   currentAmount: number;
   deadline?: string;
   accountId?: string;
+}
+
+export type TradeType = "buy" | "sell";
+
+export interface Holding {
+  id: string;
+  symbol: string;
+  name: string;
+  shares: number;
+  avgCost: number;
+  createdAt: string;
+}
+
+export interface Trade {
+  id: string;
+  holdingId: string | null;
+  symbol: string;
+  type: TradeType;
+  shares: number;
+  price: number;
+  note?: string;
+  date: string;
 }

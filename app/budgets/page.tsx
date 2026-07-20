@@ -71,7 +71,7 @@ export default function BudgetsPage() {
       </div>
 
       {/* Aggregate Overview summary */}
-      <div className="card mb-6 grid gap-4 p-5 bg-white sm:grid-cols-3">
+      <div className="card mb-6 grid gap-4 p-5 bg-surface sm:grid-cols-3">
         <div>
           <div className="text-xs font-bold text-muted uppercase tracking-wider">Total Limit Set</div>
           <div className="display tabnum text-2xl text-ink font-bold mt-1">{formatMoney(totalLimit, user.currency)}</div>
@@ -82,16 +82,16 @@ export default function BudgetsPage() {
         </div>
         <div className="border-t sm:border-t-0 sm:border-l border-line sm:pl-5 pt-3 sm:pt-0">
           <div className="text-xs font-bold text-muted uppercase tracking-wider">Remaining Buffer</div>
-          <div className={cn("display tabnum text-2xl font-bold mt-1", totalLimit - totalSpent >= 0 ? "text-[#22C55E]" : "text-[#EF4444]")}>
+          <div className={cn("display tabnum text-2xl font-bold mt-1", totalLimit - totalSpent >= 0 ? "text-primary" : "text-[#DC2626]")}>
             {formatMoney(totalLimit - totalSpent, user.currency)}
           </div>
         </div>
       </div>
 
       {/* Recommendations & insights card */}
-      <div className="card p-5 bg-[#0E7C5B]/5 border border-[#0E7C5B]/15 mb-6">
+      <div className="card p-5 bg-primary/5 border border-primary/15 mb-6">
         <div className="flex items-start gap-3">
-          <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#0E7C5B]/10 text-[#0E7C5B] shrink-0">
+          <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary/10 text-primary shrink-0">
             <Sparkles size={18} />
           </span>
           <div>
@@ -103,7 +103,7 @@ export default function BudgetsPage() {
 
       {/* Add form */}
       {showAdd && unbudgeted.length > 0 && (
-        <div className="card mb-6 flex flex-wrap items-end gap-4 p-5 bg-white">
+        <div className="card mb-6 flex flex-wrap items-end gap-4 p-5 bg-surface">
           <div className="flex-1 min-w-[160px]">
             <label className="mb-1 block text-xs font-bold uppercase text-ink">Category</label>
             <select
@@ -148,7 +148,7 @@ export default function BudgetsPage() {
           const meta = b.category ? CATEGORY_META[b.category.key] : null;
           const Icon = meta?.icon ?? Plus;
           return (
-            <div key={b.budget.id} className="card p-5 bg-white hover:border-[#0E7C5B]/40 flex flex-col justify-between">
+            <div key={b.budget.id} className="card p-5 bg-surface hover:border-primary/40 flex flex-col justify-between">
               <div>
                 <div className="flex items-center gap-3">
                   <span

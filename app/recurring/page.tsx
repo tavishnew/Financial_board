@@ -107,9 +107,9 @@ export default function RecurringPage() {
       </div>
 
       {/* Aggregate Overview card */}
-      <div className="card mb-6 flex flex-col sm:flex-row items-center justify-between p-5 bg-white gap-4">
+      <div className="card mb-6 flex flex-col sm:flex-row items-center justify-between p-5 bg-surface gap-4">
         <div className="flex items-center gap-4">
-          <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[#C2883B]/10 text-[#C2883B]">
+          <span className="grid h-12 w-12 place-items-center rounded-2xl bg-accent/10 text-accent">
             <Clock size={22} strokeWidth={2.3} />
           </span>
           <div>
@@ -123,9 +123,9 @@ export default function RecurringPage() {
       </div>
 
       {/* Subscriptions alert / insights */}
-      <div className="card p-5 bg-[#0E7C5B]/5 border border-[#0E7C5B]/15 mb-6">
+      <div className="card p-5 bg-primary/5 border border-primary/15 mb-6">
         <div className="flex items-start gap-3">
-          <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#0E7C5B]/10 text-[#0E7C5B] shrink-0">
+          <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary/10 text-primary shrink-0">
             <Sparkles size={18} />
           </span>
           <div>
@@ -138,7 +138,7 @@ export default function RecurringPage() {
       </div>
 
       {showAdd && (
-        <div className="card mb-6 flex flex-wrap items-end gap-4 p-5 bg-white">
+        <div className="card mb-6 flex flex-wrap items-end gap-4 p-5 bg-surface">
           <div className="flex-1 min-w-[150px]">
             <label className="mb-1 block text-xs font-bold uppercase text-ink">Bill Name</label>
             <input value={name} onChange={(e) => setName(e.target.value)} className="h-11 w-full rounded-xl border border-line bg-surface-2 px-3 text-sm text-ink outline-none focus:border-primary" placeholder="e.g. Netflix Subscription" />
@@ -173,7 +173,7 @@ export default function RecurringPage() {
         {items.map((i) => {
           const isPaused = paused.has(i.id);
           return (
-            <div key={i.id} className={cn("card flex items-center gap-4 p-5 bg-white hover:border-[#0E7C5B]/40", isPaused && "opacity-60 bg-slate-50/50")}>
+            <div key={i.id} className={cn("card flex items-center gap-4 p-5 bg-surface hover:border-primary/40", isPaused && "opacity-60 bg-slate-50/50")}>
               <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-primary/10 text-primary">
                 <Calendar size={20} strokeWidth={2.3} />
               </span>
