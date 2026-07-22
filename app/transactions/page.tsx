@@ -21,7 +21,11 @@ export default function TransactionsPage() {
   const toast = useToast();
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(
+    typeof window !== "undefined"
+      ? new URLSearchParams(window.location.search).get("q") ?? ""
+      : ""
+  );
   const [type, setType] = useState<TxnType | "all">("all");
   const [catFilter, setCatFilter] = useState<string>("all");
   const [accFilter, setAccFilter] = useState<string>("all");
@@ -330,6 +334,20 @@ export default function TransactionsPage() {
                       icon={Search}
                       title="No matching records found"
                       description="Clear your filter criteria or register a new transaction to populate the ledger."
+                      action={
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setQuery("");
+                            setType("all");
+                            setCatFilter("all");
+                            setAccFilter("all");
+                          }}
+                        >
+                          Clear filters
+                        </Button>
+                      }
                     />
                   </td>
                 </tr>

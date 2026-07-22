@@ -249,7 +249,7 @@ export default function LandingPage() {
       </section>
 
       {/* CTA */}
-      <section className="relative z-10 mx-auto max-w-6xl px-5 py-12">
+      <section className="relative z-10 mx-auto max-w-7xl px-5 py-12">
           <div className="card relative overflow-hidden bg-primary dark:bg-primary-press p-10 text-center text-black">
           <div aria-hidden className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-white/20 blur-2xl" />
           <h2 className="display text-[clamp(1.8rem,5vw,3rem)]">Stop guessing. Start seeing.</h2>

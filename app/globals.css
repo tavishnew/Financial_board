@@ -24,12 +24,12 @@
 }
 
 .dark {
-  --bg: oklch(0.95 0.022 68);
-  --surface: oklch(0.98 0.012 70);
-  --surface-2: oklch(0.93 0.016 66);
-  --line: oklch(0.87 0.012 65);
-  --ink: oklch(0.22 0.012 50);
-  --muted: oklch(0.45 0.012 55);
+  --bg: oklch(0.94 0.03 74);
+  --surface: oklch(0.965 0.025 74);
+  --surface-2: oklch(0.91 0.03 70);
+  --line: oklch(0.84 0.022 68);
+  --ink: oklch(0.24 0.02 56);
+  --muted: oklch(0.46 0.022 58);
   --primary: oklch(0.50 0.19 282);
   --primary-press: oklch(0.44 0.20 282);
   --accent: oklch(0.68 0.16 85);
@@ -83,18 +83,24 @@ body {
   border-radius: 4px;
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+/* Hide the main scrollbar for a cleaner look (scrolling still works) */
+html {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* legacy Edge / IE */
 }
-::-webkit-scrollbar-thumb {
-  background: var(--line);
-  border-radius: 999px;
-  border: 3px solid var(--bg);
+html::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
 }
-::-webkit-scrollbar-thumb:hover {
-  background: var(--muted);
+
+/* Hide native number-input spinners (Chrome/Safari/Edge + Firefox) */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 @layer components {

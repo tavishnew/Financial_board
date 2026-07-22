@@ -1,9 +1,10 @@
 ﻿"use client";
 
+import Link from "next/link";
 import { cn } from "@/lib/cn";
 
-export function Logo({ size = 28, className }: { size?: number; className?: string }) {
-  return (
+export function Logo({ size = 28, className, clickable = false }: { size?: number; className?: string; clickable?: boolean }) {
+  const content = (
     <span className={cn("inline-flex items-center gap-2", className)}>
       <svg width={size} height={size} viewBox="0 0 32 32" fill="none" aria-hidden="true">
         <circle cx="16" cy="16" r="14" stroke="currentColor" strokeWidth="2.5" />
@@ -13,6 +14,12 @@ export function Logo({ size = 28, className }: { size?: number; className?: stri
       <span className="display text-lg font-extrabold tracking-tight">MoneyTrail</span>
     </span>
   );
+  if (clickable) {
+    return (
+      <Link href="/" className="no-underline hover:opacity-80 transition-opacity">
+        {content}
+      </Link>
+    );
+  }
+  return content;
 }
-
-

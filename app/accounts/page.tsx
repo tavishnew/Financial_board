@@ -105,6 +105,11 @@ export default function AccountsPage() {
               icon={Plus}
               title="No accounts yet"
               description="Add your first bank, card or cash account to see your net worth."
+              action={
+                <Button size="sm" onClick={() => setShowAdd((v) => !v)}>
+                  <Plus size={16} /> Add account
+                </Button>
+              }
             />
           </div>
         )}

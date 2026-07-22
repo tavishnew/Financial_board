@@ -102,34 +102,42 @@ export default function BudgetsPage() {
       </div>
 
       {/* Add form */}
-      {showAdd && unbudgeted.length > 0 && (
+      {showAdd && (
         <div className="card mb-6 flex flex-wrap items-end gap-4 p-5 bg-surface">
-          <div className="flex-1 min-w-[160px]">
-            <label className="mb-1 block text-xs font-bold uppercase text-ink">Category</label>
-            <select
-              value={newCat}
-              onChange={(e) => setNewCat(e.target.value)}
-              className="h-11 w-full rounded-xl border border-line bg-surface-2 px-3 text-sm text-ink outline-none"
-            >
-              <option value="">Choose Category…</option>
-              {unbudgeted.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="flex-1 min-w-[140px]">
-            <label className="mb-1 block text-xs font-bold uppercase text-ink">Monthly Limit</label>
-            <input
-              type="number"
-              value={newLimit}
-              onChange={(e) => setNewLimit(e.target.value)}
-              className="h-11 w-full rounded-xl border border-line bg-surface-2 px-3 text-sm tabnum text-ink outline-none"
-              placeholder="e.g. 5000"
-            />
-          </div>
-          <Button onClick={addBudget} className="h-11">Add Budget</Button>
+          {unbudgeted.length > 0 ? (
+            <>
+              <div className="flex-1 min-w-[160px]">
+                <label className="mb-1 block text-xs font-bold uppercase text-ink">Category</label>
+                <select
+                  value={newCat}
+                  onChange={(e) => setNewCat(e.target.value)}
+                  className="h-11 w-full rounded-xl border border-line bg-surface-2 px-3 text-sm text-ink outline-none"
+                >
+                  <option value="">Choose Category…</option>
+                  {unbudgeted.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex-1 min-w-[140px]">
+                <label className="mb-1 block text-xs font-bold uppercase text-ink">Monthly Limit</label>
+                <input
+                  type="number"
+                  value={newLimit}
+                  onChange={(e) => setNewLimit(e.target.value)}
+                  className="h-11 w-full rounded-xl border border-line bg-surface-2 px-3 text-sm tabnum text-ink outline-none"
+                  placeholder="e.g. 5000"
+                />
+              </div>
+              <Button onClick={addBudget} className="h-11">Add Budget</Button>
+            </>
+          ) : (
+            <p className="text-sm text-muted">
+              Every category already has a budget. Use the edit button on a card to adjust its limit.
+            </p>
+          )}
         </div>
       )}
 
@@ -141,6 +149,11 @@ export default function BudgetsPage() {
               icon={Plus}
               title="No active budgets"
               description="Configure limits for any category to track monthly spending limits instantly."
+              action={
+                <Button size="sm" onClick={() => setShowAdd((v) => !v)}>
+                  <Plus size={16} /> Add budget
+                </Button>
+              }
             />
           </div>
         )}

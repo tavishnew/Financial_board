@@ -167,7 +167,16 @@ export default function RecurringPage() {
       <div className="grid gap-4 sm:grid-cols-2">
         {items.length === 0 && (
           <div className="sm:col-span-2">
-            <EmptyState icon={RefreshCw} title="No bills scheduled" description="MoneyTrail automatically detects duplicate subscriptions from your ledger, or you can register manual schedules." />
+            <EmptyState
+              icon={RefreshCw}
+              title="No bills scheduled"
+              description="MoneyTrail automatically detects duplicate subscriptions from your ledger, or you can register manual schedules."
+              action={
+                <Button size="sm" onClick={() => setShowAdd((v) => !v)}>
+                  <Plus size={16} /> Add manual bill
+                </Button>
+              }
+            />
           </div>
         )}
         {items.map((i) => {

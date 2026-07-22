@@ -1,14 +1,18 @@
 ﻿import Link from "next/link";
+import type { Metadata } from "next";
 import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
-export const metadata = { title: "Privacy Policy — MoneyTrail" };
+export const metadata: Metadata = {
+  title: "Privacy Policy",
+  description: "Learn how MoneyTrail handles your financial data. We never sell your data and provide full control to export or delete your records at any time.",
+};
 
 export default function PrivacyPage() {
   return (
     <div className="min-h-screen">
       <header className="mx-auto flex max-w-3xl items-center justify-between px-6 py-5">
-        <Logo />
+        <Logo clickable />
         <div className="flex items-center gap-3">
           <Link href="/" className="text-sm font-semibold text-muted hover:text-ink">Home</Link>
           <ThemeToggle />
@@ -49,5 +53,3 @@ export default function PrivacyPage() {
     </div>
   );
 }
-
-

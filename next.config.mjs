@@ -13,6 +13,17 @@ const nextConfig = {
     ],
     optimizePackageImports: ['lucide-react', 'framer-motion'],
   },
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      // Workaround for "Missing ActionQueueContext" error with React DevTools + Next.js 14 App Router
+      // See: https://github.com/vercel/next.js/issues/57642
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        'react-reconciler': 'react-reconciler/cjs/react-reconciler.production.min.js',
+      };
+    }
+    return config;
+  },
 };
 
 export default nextConfig;

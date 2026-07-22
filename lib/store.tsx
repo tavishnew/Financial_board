@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import {
   createContext,
@@ -97,21 +97,28 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     let cancelled = false;
     (async () => {
       try {
-        const [transactions, accounts, categories, budgets, goals] = await Promise.all([
-          loadJSON<Transaction[]>("/api/transactions"),
-          loadJSON<Account[]>("/api/accounts"),
-          loadJSON<Category[]>("/api/categories"),
-          loadJSON<Budget[]>("/api/budgets"),
-          loadJSON<Goal[]>("/api/goals"),
-        ]);
+       let [transactions, accounts, categories, budgets, goals] = await Promise.all([
+         loadJSON<Transaction[]>("/api/transactions"),
+         loadJSON<Account[]>("/api/accounts"),
+         loadJSON<Category[]>("/api/categories"),
+         loadJSON<Budget[]>("/api/budgets"),
+         loadJSON<Goal[]>("/api/goals"),
+       ]);
+       if (cancelled) return;
+        // Auto-seed categories for existing users who may not have them
+        if (categories.length === 0) {
+          await fetch("/api/categories/auto-seed", { method: "POST" }).catch(() => {});
+          // Re-fetch categories after seeding
+          categories = await loadJSON<Category[]>("/api/categories");
+        }
         if (cancelled) return;
-        const user: User = {
-          id: session.user.id ?? "",
-          email: session.user.email ?? "",
-          name: session.user.name ?? "You",
-          currency: (session.user as { currency?: string }).currency ?? "USD",
-        };
-        let holdings: Holding[] = [];
+       const user: User = {
+         id: session.user?.id ?? "",
+         email: session.user?.email ?? "",
+         name: session.user?.name ?? "You",
+         currency: (session.user as { currency?: string })?.currency ?? "USD",
+       };
+       let holdings: Holding[] = [];
         try {
           holdings = await loadJSON<Holding[]>("/api/holdings");
         } catch {
@@ -530,3 +537,5 @@ export function useStore() {
   if (!ctx) throw new Error("useStore must be used within StoreProvider");
   return ctx;
 }
+
+

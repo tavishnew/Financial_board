@@ -11,6 +11,18 @@ import { Button } from "./Button";
 import { cn } from "@/lib/cn";
 import type { CategoryKey, TxnType } from "@/lib/types";
 
+// ──────────────────────────────────────────────
+// Tailwind class groups (extracted from 3+ repeats)
+// ──────────────────────────────────────────────
+const cardShell = "card w-full max-w-md p-6";
+const fieldWrapper = "mb-4";
+const labelStyle = "mb-1 block text-sm font-semibold text-ink";
+const inputBase = "rounded-2xl border border-line bg-surface-2 px-3 text-sm text-ink outline-none";
+const selectBase = "h-11 w-full " + inputBase;
+const dateInputBase = selectBase;
+const toggleBtn = "rounded-xl py-2 text-sm font-semibold capitalize transition-colors";
+const categoryBtn = "flex flex-col items-center gap-1 rounded-2xl border p-2 text-xs font-semibold transition-colors";
+
 export function TransactionModal({
   open,
   onClose,
@@ -40,7 +52,7 @@ export function TransactionModal({
       setDate(new Date().toISOString().slice(0, 10));
       setNote("");
     }
-  }, [open, defaultType, accounts]);
+  }, [open, defaultType]);
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -72,6 +84,132 @@ export function TransactionModal({
     onClose();
   }
 
+  // ──────────────────────────────────────────────
+  // Sub-components (semantic names, extracted from inline)
+  // ──────────────────────────────────────────────
+  
+  // TypeSelector: expense/income toggle
+  const TypeSelector = () => (
+    <div className={`${fieldWrapper} grid grid-cols-2 gap-2 rounded-2xl bg-surface-2 p-1`} data-testid="type-selector">
+      {(["expense", "income"] as TxnType[]).map((t) => (
+        <button
+          key={t}
+          type="button"
+          onClick={() => setType(t)}
+          className={cn(
+            toggleBtn,
+            type === t ? "bg-primary text-white" : "text-muted hover:text-ink"
+          )}
+        >
+          {t}
+        </button>
+      ))}
+    </div>
+  );
+
+  // AmountField: currency-prefixed number input
+  const AmountField = () => (
+    <div className={`${fieldWrapper} flex items-center gap-2 rounded-2xl border border-line bg-surface-2 px-4`} data-testid="amount-field">
+      <span className="text-lg font-bold text-muted">{user.currency === "INR" ? "₹" : "$"}</span>
+      <input
+        type="number"
+        inputMode="decimal"
+        value={amount}
+        onChange={(e) => setAmount(e.target.value)}
+        placeholder="0"
+        className="h-12 w-full bg-transparent text-lg font-bold tabnum text-ink outline-none placeholder:text-muted/50"
+        autoFocus
+        aria-label="Amount"
+      />
+    </div>
+  );
+
+  // CategoryGrid: 3-column category picker (expenses only)
+  const CategoryGrid = () => (
+    <div className={`${fieldWrapper} grid grid-cols-3 gap-2`} data-testid="category-grid">
+      {categories.map((c) => {
+        const meta = CATEGORY_META[c.key];
+        const Icon = meta.icon;
+        const active = categoryKey === c.key;
+        return (
+          <button
+            key={c.id}
+            type="button"
+            onClick={() => setCategoryKey(c.key)}
+            className={cn(
+              categoryBtn,
+              active ? "border-primary" : "border-line hover:border-primary/50"
+            )}
+            style={active ? { background: "color-mix(in oklch, 14%, transparent)", color: meta.hue } : undefined}
+            aria-pressed={active}
+            aria-label={meta.name}
+          >
+            <Icon size={18} strokeWidth={2.4} aria-hidden="true" />
+            {meta.name}
+          </button>
+        );
+      })}
+    </div>
+  );
+
+  // AccountDateFields: side-by-side account select + date picker
+  const AccountDateFields = () => (
+    <div className={`${fieldWrapper} grid grid-cols-2 gap-3`} data-testid="account-date-fields">
+      <div>
+        <label htmlFor="txn-account" className={labelStyle}>Account</label>
+        <select
+          id="txn-account"
+          value={accountId}
+          onChange={(e) => setAccountId(e.target.value)}
+          className={selectBase}
+        >
+          {accounts.filter((a) => !a.archived).map((a) => (
+            <option key={a.id} value={a.id}>{a.name}</option>
+          ))}
+        </select>
+      </div>
+      <div>
+        <label htmlFor="txn-date" className={labelStyle}>Date</label>
+        <input
+          id="txn-date"
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          className={dateInputBase}
+        />
+      </div>
+    </div>
+  );
+
+  // NoteField: free-text note input
+  const NoteField = () => (
+    <div className={`${fieldWrapper}`} data-testid="note-field">
+      <label htmlFor="txn-note" className={labelStyle}>Note</label>
+      <input
+        id="txn-note"
+        value={note}
+        onChange={(e) => setNote(e.target.value)}
+        placeholder="e.g. Grocery run"
+        className={`h-11 w-full ${inputBase}`}
+      />
+    </div>
+  );
+
+  // ActionButtons: cancel + submit
+  const ActionButtons = () => (
+    <div className="flex gap-3" data-testid="action-buttons">
+      <Button variant="soft" className="flex-1" onClick={onClose}>
+        Cancel
+      </Button>
+      <Button className="flex-1" onClick={submit} disabled={!valid}>
+        <Wallet size={16} aria-hidden="true" /> Add {type}
+      </Button>
+    </div>
+  );
+
+  // ──────────────────────────────────────────────
+  // Render via portal
+  // ──────────────────────────────────────────────
   return createPortal(
     <AnimatePresence>
       {open && (
@@ -81,9 +219,12 @@ export function TransactionModal({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
+          data-testid="transaction-modal-backdrop"
+          role="presentation"
+          aria-hidden="true"
         >
           <motion.div
-            className="card w-full max-w-md p-6"
+            className={cardShell}
             initial={reduce ? { opacity: 0 } : { opacity: 0, transform: "translateY(20px) scale(0.97)" }}
             animate={reduce ? { opacity: 1 } : { opacity: 1, transform: "translateY(0px) scale(1)" }}
             exit={reduce ? { opacity: 0 } : { opacity: 0, transform: "translateY(20px) scale(0.97)", transition: { duration: 0.18, ease: [0.22, 1, 0.36, 1] } }}
@@ -92,112 +233,28 @@ export function TransactionModal({
             role="dialog"
             aria-modal="true"
             aria-label="Add transaction"
+            data-testid="transaction-modal"
           >
-            <div className="mb-5 flex items-center justify-between">
+            <header className="mb-5 flex items-center justify-between" data-testid="modal-header">
               <h2 className="display text-xl text-ink">Add transaction</h2>
-              <button onClick={onClose} className="text-muted hover:text-ink" aria-label="Close">
-                <X size={20} />
+              <button
+                type="button"
+                onClick={onClose}
+                className="text-muted hover:text-ink"
+                aria-label="Close"
+              >
+                <X size={20} aria-hidden="true" />
               </button>
-            </div>
+            </header>
 
-            <div className="mb-4 grid grid-cols-2 gap-2 rounded-2xl bg-surface-2 p-1">
-              {(["expense", "income"] as TxnType[]).map((t) => (
-                <button
-                  key={t}
-                  onClick={() => setType(t)}
-                  className={cn(
-                    "rounded-xl py-2 text-sm font-semibold capitalize transition-colors",
-                    type === t ? "bg-primary text-white" : "text-muted hover:text-ink"
-                  )}
-                >
-                  {t}
-                </button>
-              ))}
-            </div>
-
-            <label className="mb-1 block text-sm font-semibold text-ink">Amount</label>
-            <div className="mb-4 flex items-center gap-2 rounded-2xl border border-line bg-surface-2 px-4">
-              <span className="text-lg font-bold text-muted">{user.currency === "INR" ? "₹" : "$"}</span>
-              <input
-                type="number"
-                inputMode="decimal"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                placeholder="0"
-                className="h-12 w-full bg-transparent text-lg font-bold tabnum text-ink outline-none placeholder:text-muted/50"
-                autoFocus
-              />
-            </div>
-
-            {type === "expense" && (
-              <>
-                <label className="mb-1 block text-sm font-semibold text-ink">Category</label>
-                <div className="mb-4 grid grid-cols-3 gap-2">
-                  {categories.map((c) => {
-                    const meta = CATEGORY_META[c.key];
-                    const Icon = meta.icon;
-                    const active = categoryKey === c.key;
-                    return (
-                      <button
-                        key={c.id}
-                        onClick={() => setCategoryKey(c.key)}
-                        className={cn(
-                          "flex flex-col items-center gap-1 rounded-2xl border p-2 text-xs font-semibold transition-colors",
-                          active ? "border-primary" : "border-line hover:border-primary/50"
-                        )}
-                        style={active ? { background: `color-mix(in oklch, ${meta.hue} 14%, transparent)`, color: meta.hue } : undefined}
-                      >
-                        <Icon size={18} strokeWidth={2.4} />
-                        {meta.name}
-                      </button>
-                    );
-                  })}
-                </div>
-              </>
-            )}
-
-            <div className="mb-4 grid grid-cols-2 gap-3">
-              <div>
-                <label className="mb-1 block text-sm font-semibold text-ink">Account</label>
-                <select
-                  value={accountId}
-                  onChange={(e) => setAccountId(e.target.value)}
-                  className="h-11 w-full rounded-2xl border border-line bg-surface-2 px-3 text-sm text-ink outline-none"
-                >
-                  {accounts.filter((a) => !a.archived).map((a) => (
-                    <option key={a.id} value={a.id}>
-                      {a.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="mb-1 block text-sm font-semibold text-ink">Date</label>
-                <input
-                  type="date"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  className="h-11 w-full rounded-2xl border border-line bg-surface-2 px-3 text-sm text-ink outline-none"
-                />
-              </div>
-            </div>
-
-            <label className="mb-1 block text-sm font-semibold text-ink">Note</label>
-            <input
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              placeholder="e.g. Grocery run"
-              className="mb-6 h-11 w-full rounded-2xl border border-line bg-surface-2 px-3 text-sm text-ink outline-none"
-            />
-
-            <div className="flex gap-3">
-              <Button variant="soft" className="flex-1" onClick={onClose}>
-                Cancel
-              </Button>
-              <Button className="flex-1" onClick={submit}>
-                <Wallet size={16} /> Add {type}
-              </Button>
-            </div>
+            <form onSubmit={(e) => { e.preventDefault(); submit(); }} data-testid="transaction-form">
+              <TypeSelector />
+              <AmountField />
+              {type === "expense" && <CategoryGrid />}
+              <AccountDateFields />
+              <NoteField />
+              <ActionButtons />
+            </form>
           </motion.div>
         </motion.div>
       )}
@@ -205,4 +262,3 @@ export function TransactionModal({
     document.body
   );
 }
-

@@ -1,0 +1,5 @@
+﻿# MoneyTrail robots.txt
+User-agent: *
+Allow: /
+
+Sitemap: https://moneytrail.app/sitemap.xml

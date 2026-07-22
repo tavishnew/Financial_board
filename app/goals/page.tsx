@@ -118,6 +118,11 @@ export default function GoalsPage() {
               icon={Target}
               title="No active saving targets"
               description="Define your first savings milestone, and we will help you track your progress timeline."
+              action={
+                <Button size="sm" onClick={() => setShowAdd((v) => !v)}>
+                  <Plus size={16} /> Add goal
+                </Button>
+              }
             />
           </div>
         )}

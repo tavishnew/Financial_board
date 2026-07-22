@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { ArrowUpRight, TrendingDown, Trophy, Sparkles, AlertCircle, Calendar, CreditCard, ChevronRight } from "lucide-react";
@@ -44,7 +44,7 @@ export default function DashboardPage() {
         <div>
           <span className="kicker text-primary font-bold">{greet}, {user.name}</span>
           <h1 className="display text-4xl mt-1 tracking-tight text-ink font-extrabold">Your financial story</h1>
-          <p className="text-muted text-sm mt-1">Keep moving toward your goals · Here is where your money is going this month.</p>
+          <p className="text-muted text-sm mt-1">Keep moving toward your goals Â· Here is where your money is going this month.</p>
         </div>
         <div className="flex items-center gap-3">
           <Link href="/transactions">
@@ -66,7 +66,7 @@ export default function DashboardPage() {
               <div className="flex items-center justify-between">
                 <span className="kicker text-muted">Net Worth Overview</span>
                 <span className="rounded-pill bg-[#22C55E]/10 px-2.5 py-1 text-xs font-bold text-primary">
-                  ▲ {savingsRate}% saved this month
+                  â–² {savingsRate}% saved this month
                 </span>
               </div>
               <div className="display tabnum mt-3 text-[clamp(2.5rem,5vw,3.75rem)] text-ink leading-none">
@@ -121,7 +121,7 @@ export default function DashboardPage() {
                 <div className="text-xs min-w-0 flex-1">
                   <div className="text-muted truncate">Top category</div>
                   <div className="font-bold text-ink truncate">
-                    {topMeta.name} · {formatMoney(top.amount, user.currency)}
+                    {topMeta.name} Â· {formatMoney(top.amount, user.currency)}
                   </div>
                 </div>
               </div>
@@ -262,7 +262,7 @@ export default function DashboardPage() {
                 </Link>
               </div>
               
-              <div className="divide-y divide-line max-h-[260px] overflow-y-auto pr-1">
+              <div className="divide-y divide-line max-h-[260px] overflow-y-auto pr-1 [&::-webkit-scrollbar]:hidden scrollbar-none">
                 {recent.map((t) => (
                   <TransactionRow key={t.id} txn={t} />
                 ))}

@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser, unauthorized, num } from "@/lib/session";
 import type { Prisma } from "@prisma/client";
@@ -57,10 +57,8 @@ export async function POST(req: Request) {
     },
   });
 
-  await prisma.account.update({
-    where: { id: accountId },
-    data: { balance: { increment: type === "income" ? Number(amount) : -Number(amount) } },
-  });
+  // Balance is updated optimistically in the client store (store.tsx addTransaction)
+  // Do NOT update here to avoid double-counting.
 
   return NextResponse.json({ ...created, amount: num(created.amount) }, { status: 201 });
 }

@@ -31,7 +31,7 @@ export default function OnboardingPage() {
   const reduce = useReducedMotion();
 
   const [currency, setCurrencyState] = useState("INR");
-  const [accName, setAccName] = useState("Salary Account");
+  const [accName, setAccName] = useState("");
   const [accType, setAccType] = useState<AccountType>("bank");
   const [accBalance, setAccBalance] = useState("50000");
   const [picked, setPicked] = useState<Record<string, string>>({

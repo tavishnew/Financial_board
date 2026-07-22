@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -12,7 +12,7 @@ import { useToast } from "@/components/Toast";
 export default function LoginPage() {
   const router = useRouter();
   const toast = useToast();
-  const [email, setEmail] = useState("your@gmail.com");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -93,3 +93,4 @@ function Field({
     </label>
   );
 }
+

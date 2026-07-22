@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -15,12 +15,17 @@ export default function SignupPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !passwordConfirm) {
       toast("Fill in every field to continue", "error");
+      return;
+    }
+    if (password !== passwordConfirm) {
+      toast("Passwords do not match", "error");
       return;
     }
     setLoading(true);
@@ -28,11 +33,11 @@ export default function SignupPage() {
       const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ name, email, password, passwordConfirm }),
       });
       if (!res.ok) {
         const data = (await res.json().catch(() => ({}))) as { error?: string };
-        toast(data.error ?? "Could not create account — is that email taken?", "error");
+        toast(data.error ?? "Could not create account", "error");
         return;
       }
       const signInRes = await signIn("credentials", { email, password, redirect: false });
@@ -85,6 +90,16 @@ export default function SignupPage() {
             type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              className="h-12 w-full bg-transparent text-ink"
+              placeholder="••••••••"
+              autoComplete="new-password"
+            />
+        </Field>
+        <Field icon={<Lock size={18} />} label="Confirm password">
+          <input
+            type="password"
+              value={passwordConfirm}
+              onChange={(e) => setPasswordConfirm(e.target.value)}
               className="h-12 w-full bg-transparent text-ink"
               placeholder="••••••••"
               autoComplete="new-password"
