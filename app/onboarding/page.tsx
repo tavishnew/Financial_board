@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -10,7 +10,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { useStore } from "@/lib/store";
 import { useToast } from "@/components/Toast";
 import { CATEGORY_META, CATEGORY_ORDER } from "@/lib/categories";
-import { cn } from "@/lib/cn";
+import clsx from "clsx";
 import type { AccountType, CategoryKey } from "@/lib/types";
 
 const CURRENCIES = ["INR", "USD", "EUR", "GBP"];
@@ -70,14 +70,14 @@ export default function OnboardingPage() {
           {STEPS.map((s, i) => (
             <div key={s} className="flex flex-1 items-center gap-2">
               <div
-                className={cn(
+                className={clsx(
                   "grid h-8 w-8 place-items-center rounded-full text-sm font-bold transition-colors",
                   i <= step ? "bg-primary text-white" : "bg-surface-2 text-muted"
                 )}
               >
                 {i < step ? <Check size={16} /> : i + 1}
               </div>
-              <span className={cn("text-sm font-semibold", i <= step ? "text-ink" : "text-muted")}>{s}</span>
+              <span className={clsx("text-sm font-semibold", i <= step ? "text-ink" : "text-muted")}>{s}</span>
               {i < STEPS.length - 1 && <div className="h-0.5 flex-1 rounded-full bg-line" />}
             </div>
           ))}
@@ -93,7 +93,7 @@ export default function OnboardingPage() {
                   <button
                     key={c}
                     onClick={() => setCurrencyState(c)}
-                    className={cn(
+                    className={clsx(
                       "rounded-2xl border py-4 text-lg font-bold transition-colors",
                       currency === c ? "border-primary bg-primary/10 text-primary" : "border-line text-ink hover:border-primary/50"
                     )}
@@ -121,7 +121,7 @@ export default function OnboardingPage() {
                     <button
                       key={t.key}
                       onClick={() => setAccType(t.key)}
-                      className={cn(
+                      className={clsx(
                         "rounded-2xl border py-3 text-sm font-semibold transition-colors",
                         accType === t.key ? "border-primary bg-primary/10 text-primary" : "border-line text-ink hover:border-primary/50"
                       )}
@@ -163,7 +163,7 @@ export default function OnboardingPage() {
                             return next;
                           })
                         }
-                        className={cn(
+                        className={clsx(
                           "grid h-9 w-9 place-items-center rounded-xl transition-colors",
                           active ? "text-white" : "bg-surface text-muted"
                         )}

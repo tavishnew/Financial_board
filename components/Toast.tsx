@@ -9,7 +9,7 @@ import {
 } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { CheckCircle2, AlertTriangle, Info, X } from "lucide-react";
-import { cn } from "@/lib/cn";
+import clsx from "clsx";
 
 type ToastType = "success" | "error" | "info";
 interface Toast {
@@ -47,7 +47,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               className="pointer-events-auto flex items-center gap-3 rounded-2xl border border-line bg-surface px-4 py-3 shadow-card"
             >
               <span
-                className={cn(
+                className={clsx(
                   "grid h-8 w-8 shrink-0 place-items-center rounded-xl",
                   t.type === "success" && "bg-[color:var(--c-income)]/15 text-primary",
                   t.type === "error" && "bg-[color:var(--c-bills)]/15 text-[color:var(--c-bills)]",

@@ -1,69 +1,66 @@
-const CURRENCY_SYMBOLS: Record<string, string> = {
-  INR: "₹",
-  USD: "$",
-  EUR: "€",
-  GBP: "£",
-};
-
-export function currencySymbol(code: string): string {
-  return CURRENCY_SYMBOLS[code] ?? code + " ";
-}
-
-export function formatMoney(amount: number, currency = "INR", opts?: { signed?: boolean }): string {
-  const sym = currencySymbol(currency);
-  const abs = Math.abs(amount);
-  const formatted = abs.toLocaleString("en-IN", {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  });
-  if (opts?.signed) {
-    const sign = amount < 0 ? "−" : amount > 0 ? "+" : "";
-    return `${sign}${sym}${formatted}`;
+export function formatMoney(
+  amount: number,
+  currency?: string,
+  options?: { signed?: boolean }
+): string {
+  const ccy = currency ?? "INR";
+  const signed = options?.signed ?? false;
+  
+  const prefix = signed && amount > 0 ? "+" : "";
+  const formattedAmount = Math.abs(amount);
+  
+  try {
+    return prefix + new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: ccy,
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(formattedAmount);
+  } catch {
+    return prefix + new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(formattedAmount);
   }
-  return `${sym}${formatted}`;
 }
 
-export function formatCompact(amount: number, currency = "INR"): string {
-  const sym = currencySymbol(currency);
-  const formatted = Math.abs(amount).toLocaleString("en-IN", {
-    notation: "compact",
-    maximumFractionDigits: 1,
-  });
-  return `${sym}${formatted}`;
+export function pct(numerator: number, denominator: number): number {
+  if (denominator === 0) return 0;
+  return Math.round((numerator / denominator) * 100);
 }
 
-export function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString("en-IN", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
+export function formatDate(date: string | Date): string {
+  const d = typeof date === "string" ? new Date(date) : date;
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
-export function formatDay(iso: string): string {
-  return new Date(iso).toLocaleDateString("en-IN", { day: "numeric", month: "short" });
+export function formatDay(date: string | Date): string {
+  const d = typeof date === "string" ? new Date(date) : date;
+  return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
 }
 
-export function monthKey(iso: string): string {
-  const d = new Date(iso);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+export function formatCompact(amount: number, _currency?: string): string {
+  if (amount >= 1_000_000) return (amount / 1_000_000).toFixed(1) + "M";
+  if (amount >= 1_000) return (amount / 1_000).toFixed(1) + "K";
+  return amount.toString();
 }
 
-export function monthLabel(iso: string): string {
-  return new Date(iso).toLocaleDateString("en-IN", { month: "short", year: "2-digit" });
-}
-
-export function relativeDay(iso: string): string {
-  const d = new Date(iso);
+export function relativeDay(date: string | Date): string {
+  const d = typeof date === "string" ? new Date(date) : date;
   const now = new Date();
-  const diff = Math.floor((now.setHours(0, 0, 0, 0) - new Date(d).setHours(0, 0, 0, 0)) / 86400000);
-  if (diff === 0) return "Today";
-  if (diff === 1) return "Yesterday";
-  if (diff > 1 && diff < 7) return `${diff}d ago`;
-  return formatDay(iso);
+  const diff = d.getTime() - now.getTime();
+  const days = Math.round(diff / (1000 * 60 * 60 * 24));
+  
+  if (days === 0) return "Today";
+  if (days === 1) return "Tomorrow";
+  if (days === -1) return "Yesterday";
+  if (days > 0) return `In ${days} days`;
+  return `${Math.abs(days)} days ago`;
 }
 
-export function pct(part: number, whole: number): number {
-  if (whole === 0) return 0;
-  return Math.min(100, Math.round((part / whole) * 100));
+export function monthKey(date: string | Date): string {
+  const d = typeof date === "string" ? new Date(date) : date;
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
 }

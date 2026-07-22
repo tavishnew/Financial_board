@@ -9,7 +9,7 @@ import { EmptyState } from "@/components/EmptyState";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { useStore } from "@/lib/store";
 import { formatMoney, pct, formatDate } from "@/lib/format";
-import { cn } from "@/lib/cn";
+import clsx from "clsx";
 
 export default function GoalsPage() {
   const { goals, user, addGoal, deleteGoal } = useStore();
@@ -145,7 +145,7 @@ export default function GoalsPage() {
             <div key={g.id} className="card p-5 bg-surface hover:border-primary/40 flex flex-col justify-between min-h-[250px]">
               <div>
                 <div className="flex items-start justify-between">
-                  <span className={cn(
+                  <span className={clsx(
                     "grid h-11 w-11 place-items-center rounded-2xl",
                     isFinished 
                       ? "bg-[#22C55E]/15 text-primary" 

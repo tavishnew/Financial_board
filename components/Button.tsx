@@ -1,7 +1,7 @@
-﻿"use client";
+"use client";
 
 import { forwardRef, type ButtonHTMLAttributes } from "react";
-import { cn } from "@/lib/cn";
+import clsx from "clsx";
 
 type Variant = "primary" | "ghost" | "soft" | "danger" | "outline";
 type Size = "sm" | "md" | "lg" | "xl";
@@ -31,7 +31,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ variant = "primary", size = "md", className, ...props }, ref) => (
     <button
       ref={ref}
-      className={cn(
+      className={clsx(
         "inline-flex items-center justify-center gap-2 font-semibold tracking-tight transition-colors transition-transform duration-150 ease-out-quint disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98]",
         variants[variant],
         sizes[size],

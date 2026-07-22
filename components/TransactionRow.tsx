@@ -5,11 +5,12 @@ import { useStore } from "@/lib/store";
 import { CATEGORY_META } from "@/lib/categories";
 import { formatMoney, relativeDay } from "@/lib/format";
 import type { Transaction } from "@/lib/types";
-import { cn } from "@/lib/cn";
+import clsx from "clsx";
 import { DEMO_CATEGORIES } from "@/lib/demo";
+import { useMemo } from "react";
 
 export function TransactionRow({ txn }: { txn: Transaction }) {
-  const { categories, accounts, user } = useStore();
+  const { categories, accounts, user, transactions } = useStore();
   const cat = txn.categoryId
     ? categories.find((c) => c.id === txn.categoryId) ?? DEMO_CATEGORIES.find((c) => c.id === txn.categoryId)
     : null;
@@ -18,6 +19,18 @@ export function TransactionRow({ txn }: { txn: Transaction }) {
   const hue = meta?.hue ?? "var(--c-income)";
   const account = accounts.find((a) => a.id === txn.accountId);
   const isIncome = txn.type === "income";
+
+  // Calculate total income from all transactions
+  const totalIncome = useMemo(() => {
+    return transactions
+      .filter((t) => t.type === "income")
+      .reduce((sum, t) => sum + t.amount, 0);
+  }, [transactions]);
+
+  // Check if transaction exceeds limits
+  const isOverLimit = isIncome
+    ? account && txn.amount > account.balance
+    : txn.amount > totalIncome || (account && txn.amount > account.balance);
 
   return (
     <div className="flex items-center gap-3 py-2.5">
@@ -35,9 +48,9 @@ export function TransactionRow({ txn }: { txn: Transaction }) {
         </div>
       </div>
       <div
-        className={cn(
+        className={clsx(
           "tabnum shrink-0 text-sm font-bold",
-          isIncome ? "text-primary" : "text-ink"
+          isIncome ? (isOverLimit ? "text-[#DC2626]" : "text-primary") : isOverLimit ? "text-[#DC2626]" : "text-ink"
         )}
       >
         {formatMoney(isIncome ? txn.amount : -txn.amount, user.currency, { signed: true })}

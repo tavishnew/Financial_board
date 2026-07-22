@@ -27,7 +27,7 @@ import { QuickAdd } from "./QuickAdd";
 import { useStore } from "@/lib/store";
 import { budgetProgress } from "@/lib/selectors";
 import { formatMoney } from "@/lib/format";
-import { cn } from "@/lib/cn";
+import clsx from "clsx";
 
 const NAV = [
   { href: "/dashboard", label: "Home", icon: LayoutDashboard },
@@ -43,7 +43,7 @@ const NAV = [
 // WorkspaceSearch: search form for transactions (usersearch ? UsersearchForm)
 export function WorkspaceSearch({ className, placeholder = "Search workspace..." }: { className?: string; placeholder?: string }) {
   return (
-    <form action="/transactions" method="get" className={cn("relative mb-4 px-2", className)}>
+    <form action="/transactions" method="get" className={clsx("relative mb-4 px-2", className)}>
       <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
       <input
         type="text"
@@ -67,14 +67,14 @@ export function SidebarNavigation() {
           <Link
             key={item.href}
             href={item.href}
-            className={cn(
+            className={clsx(
               "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors duration-200",
               active
                 ? "bg-primary text-white shadow-lg shadow-primary/20"
                 : "text-slate-300 hover:bg-white/5 hover:text-white"
             )}
           >
-            <Icon size={18} strokeWidth={2.3} className={cn(active ? "text-white" : "text-slate-400")} />
+            <Icon size={18} strokeWidth={2.3} className={clsx(active ? "text-white" : "text-slate-400")} />
             {item.label}
           </Link>
         );
@@ -160,7 +160,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="min-h-screen bg-[var(--bg)]" data-testid="app-shell">
       {/* Desktop Sidebar */}
       <aside
-        className={cn(
+        className={clsx(
           "fixed left-0 top-0 z-40 hidden h-screen flex-col bg-[#1A1611] border-r border-[#2C2620] p-5 transition-[transform,opacity] duration-300 ease-out-quint lg:flex",
           sidebarOpen ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0 pointer-events-none"
         )}
@@ -212,7 +212,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                     key={item.href}
                     href={item.href}
                     onClick={() => setMobileOpen(false)}
-                    className={cn(
+                    className={clsx(
                       "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors",
                       active ? "bg-primary text-white" : "text-slate-300 hover:bg-white/5"
                     )}
@@ -232,12 +232,12 @@ export function AppShell({ children }: { children: ReactNode }) {
       )}
 
       {/* MainContentWrapper */}
-      <div className={cn("flex min-h-screen flex-col lg:transition-[padding] lg:duration-300", sidebarOpen && "lg:pl-[260px]")}>
+      <div className={clsx("flex min-h-screen flex-col lg:transition-[padding] lg:duration-300", sidebarOpen && "lg:pl-[260px]")}>
         {/* Topbar */}
         <header
           onMouseEnter={() => setTopHover(true)}
           onMouseLeave={() => setTopHover(false)}
-          className={cn(
+          className={clsx(
             "sticky top-0 z-40 flex h-16 items-center gap-3 border-b border-line bg-surface/80 px-4 py-3 backdrop-blur transition-[transform,margin,opacity] duration-500 ease-out-quint lg:px-8",
             topVisible ? "translate-y-0 opacity-100 mt-0" : "md:-translate-y-full md:opacity-0 md:-mt-16 md:pointer-events-none"
           )}
@@ -280,7 +280,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
         {/* Mobile Bottom Navigation */}
         <nav
-          className={cn(
+          className={clsx(
             "fixed bottom-0 inset-x-0 z-40 flex h-16 items-center justify-around gap-2 border-t border-line bg-surface/90 px-2 pr-14 py-2 backdrop-blur transition-[transform,opacity] duration-300 ease-out-quint lg:hidden",
             bottomNavOpen ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0 pointer-events-none"
           )}
@@ -294,7 +294,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 key={item.href}
                 href={item.href}
                 onClick={() => setBottomNavOpen(false)}
-                className={cn(
+                className={clsx(
                   "grid h-11 w-14 place-items-center rounded-xl transition-colors",
                   active ? "bg-primary text-white shadow-md shadow-primary/25" : "text-muted hover:text-ink"
                 )}
@@ -316,7 +316,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <ChevronUp
             size={22}
             strokeWidth={2.4}
-            className={cn("transition-transform duration-300", bottomNavOpen ? "rotate-180" : "")}
+            className={clsx("transition-transform duration-300", bottomNavOpen ? "rotate-180" : "")}
           />
         </button>
 

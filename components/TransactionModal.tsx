@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
@@ -8,12 +8,12 @@ import { CATEGORY_META } from "@/lib/categories";
 import { useStore } from "@/lib/store";
 import { useToast } from "./Toast";
 import { Button } from "./Button";
-import { cn } from "@/lib/cn";
+import clsx from "clsx";
 import type { CategoryKey, TxnType } from "@/lib/types";
 
-// ──────────────────────────────────────────────
+// ----------------------------------------------
 // Tailwind class groups (extracted from 3+ repeats)
-// ──────────────────────────────────────────────
+// ----------------------------------------------
 const cardShell = "card w-full max-w-md p-6";
 const fieldWrapper = "mb-4";
 const labelStyle = "mb-1 block text-sm font-semibold text-ink";
@@ -84,9 +84,9 @@ export function TransactionModal({
     onClose();
   }
 
-  // ──────────────────────────────────────────────
+  // ----------------------------------------------
   // Sub-components (semantic names, extracted from inline)
-  // ──────────────────────────────────────────────
+  // ----------------------------------------------
   
   // TypeSelector: expense/income toggle
   const TypeSelector = () => (
@@ -96,7 +96,7 @@ export function TransactionModal({
           key={t}
           type="button"
           onClick={() => setType(t)}
-          className={cn(
+          className={clsx(
             toggleBtn,
             type === t ? "bg-primary text-white" : "text-muted hover:text-ink"
           )}
@@ -110,7 +110,7 @@ export function TransactionModal({
   // AmountField: currency-prefixed number input
   const AmountField = () => (
     <div className={`${fieldWrapper} flex items-center gap-2 rounded-2xl border border-line bg-surface-2 px-4`} data-testid="amount-field">
-      <span className="text-lg font-bold text-muted">{user.currency === "INR" ? "₹" : "$"}</span>
+      <span className="text-lg font-bold text-muted">{user.currency === "INR" ? "?" : "$"}</span>
       <input
         type="number"
         inputMode="decimal"
@@ -136,7 +136,7 @@ export function TransactionModal({
             key={c.id}
             type="button"
             onClick={() => setCategoryKey(c.key)}
-            className={cn(
+            className={clsx(
               categoryBtn,
               active ? "border-primary" : "border-line hover:border-primary/50"
             )}
@@ -207,9 +207,9 @@ export function TransactionModal({
     </div>
   );
 
-  // ──────────────────────────────────────────────
+  // ----------------------------------------------
   // Render via portal
-  // ──────────────────────────────────────────────
+  // ----------------------------------------------
   return createPortal(
     <AnimatePresence>
       {open && (

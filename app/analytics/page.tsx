@@ -11,7 +11,7 @@ import { Button } from "@/components/Button";
 import { useStore } from "@/lib/store";
 import { monthTotals, netWorth } from "@/lib/selectors";
 import { formatMoney } from "@/lib/format";
-import { cn } from "@/lib/cn";
+import clsx from "clsx";
 
 const RANGES = [
   { label: "Quarterly View", months: 3 },
@@ -45,7 +45,7 @@ export default function AnalyticsPage() {
               <button
                 key={r.months}
                 onClick={() => setRange(r.months)}
-                className={cn(
+                className={clsx(
                   "rounded-pill px-3 py-1.5 text-xs font-bold transition-colors",
                   range === r.months ? "bg-primary text-white" : "text-muted hover:text-ink"
                 )}

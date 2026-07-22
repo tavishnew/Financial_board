@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { Plus, Landmark, CreditCard, Wallet, PiggyBank, Archive, ArchiveRestore } from "lucide-react";
@@ -9,7 +9,7 @@ import { EmptyState } from "@/components/EmptyState";
 import { useStore } from "@/lib/store";
 import { netWorth } from "@/lib/selectors";
 import { formatMoney } from "@/lib/format";
-import { cn } from "@/lib/cn";
+import clsx from "clsx";
 import type { AccountType } from "@/lib/types";
 
 const TYPE_META: Record<AccountType, { icon: typeof Wallet; label: string }> = {
@@ -132,7 +132,7 @@ export default function AccountsPage() {
                 </button>
               </div>
               <div className="mt-4 text-sm font-semibold text-muted">{a.name}</div>
-              <div className={cn("display tabnum text-2xl", negative ? "text-[color:var(--c-bills)]" : "text-ink")}>
+              <div className={clsx("display tabnum text-2xl", negative ? "text-[color:var(--c-bills)]" : "text-ink")}>
                 {formatMoney(a.balance, user.currency, { signed: true })}
               </div>
               <div className="mt-1 text-xs uppercase tracking-wider text-muted">{meta.label}</div>

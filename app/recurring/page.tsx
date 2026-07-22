@@ -9,7 +9,7 @@ import { EmptyState } from "@/components/EmptyState";
 import { useStore } from "@/lib/store";
 import { CATEGORY_META } from "@/lib/categories";
 import { formatMoney, formatDay } from "@/lib/format";
-import { cn } from "@/lib/cn";
+import clsx from "clsx";
 import type { CategoryKey } from "@/lib/types";
 
 interface RecItem {
@@ -182,7 +182,7 @@ export default function RecurringPage() {
         {items.map((i) => {
           const isPaused = paused.has(i.id);
           return (
-            <div key={i.id} className={cn("card flex items-center gap-4 p-5 bg-surface hover:border-primary/40", isPaused && "opacity-60 bg-slate-50/50")}>
+            <div key={i.id} className={clsx("card flex items-center gap-4 p-5 bg-surface hover:border-primary/40", isPaused && "opacity-60 bg-slate-50/50")}>
               <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-primary/10 text-primary">
                 <Calendar size={20} strokeWidth={2.3} />
               </span>

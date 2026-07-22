@@ -10,7 +10,7 @@ import { useStore } from "@/lib/store";
 import { budgetProgress } from "@/lib/selectors";
 import { formatMoney, pct } from "@/lib/format";
 import { CATEGORY_META } from "@/lib/categories";
-import { cn } from "@/lib/cn";
+import clsx from "clsx";
 
 export default function BudgetsPage() {
   const { transactions, budgets, categories, user, upsertBudget, deleteBudget } = useStore();
@@ -82,7 +82,7 @@ export default function BudgetsPage() {
         </div>
         <div className="border-t sm:border-t-0 sm:border-l border-line sm:pl-5 pt-3 sm:pt-0">
           <div className="text-xs font-bold text-muted uppercase tracking-wider">Remaining Buffer</div>
-          <div className={cn("display tabnum text-2xl font-bold mt-1", totalLimit - totalSpent >= 0 ? "text-primary" : "text-[#DC2626]")}>
+          <div className={clsx("display tabnum text-2xl font-bold mt-1", totalLimit - totalSpent >= 0 ? "text-primary" : "text-[#DC2626]")}>
             {formatMoney(totalLimit - totalSpent, user.currency)}
           </div>
         </div>
@@ -217,7 +217,7 @@ export default function BudgetsPage() {
 
               <div className="mt-4 pt-3 border-t border-line flex items-center justify-between text-xs">
                 <span className="tabnum text-muted font-bold">{formatMoney(b.spent, user.currency)} spent</span>
-                <span className={cn("tabnum font-semibold", b.over ? "text-danger" : "text-ink")}>
+                <span className={clsx("tabnum font-semibold", b.over ? "text-danger" : "text-ink")}>
                   {b.over ? `+${formatMoney(Math.abs(b.remaining), user.currency)} over` : `${formatMoney(b.remaining, user.currency)} remaining`}
                 </span>
               </div>

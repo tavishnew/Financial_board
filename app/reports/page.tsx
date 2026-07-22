@@ -8,7 +8,7 @@ import { useStore } from "@/lib/store";
 import { monthTotals } from "@/lib/selectors";
 import { formatMoney } from "@/lib/format";
 import { CATEGORY_META } from "@/lib/categories";
-import { cn } from "@/lib/cn";
+import clsx from "clsx";
 import { motion } from "framer-motion";
 
 export default function ReportsPage() {
@@ -74,7 +74,7 @@ export default function ReportsPage() {
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={cn(
+            className={clsx(
               "pb-3 text-sm font-bold border-b-2 transition-colors capitalize",
               activeTab === tab ? "border-transparent text-primary" : "border-transparent text-muted hover:text-ink"
             )}
@@ -134,7 +134,7 @@ export default function ReportsPage() {
             <div className="border-t border-line pt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-surface-2 p-4 rounded-xl">
               <div>
                 <div className="text-xs font-bold text-muted uppercase tracking-wider">Net Retained Earnings</div>
-                <div className={cn("display text-2xl font-bold mt-1", totals.net >= 0 ? "text-primary" : "text-[#DC2626]")}>
+                <div className={clsx("display text-2xl font-bold mt-1", totals.net >= 0 ? "text-primary" : "text-[#DC2626]")}>
                   {formatMoney(totals.net, user.currency)}
                 </div>
               </div>

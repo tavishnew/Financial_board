@@ -9,7 +9,7 @@ import { useStore } from "@/lib/store";
 import { useTheme } from "@/components/ThemeProvider";
 import { useToast } from "@/components/Toast";
 import { CATEGORY_META, CATEGORY_ORDER } from "@/lib/categories";
-import { cn } from "@/lib/cn";
+import clsx from "clsx";
 import type { CategoryKey } from "@/lib/types";
 import { motion } from "framer-motion";
 import { signOut } from "next-auth/react";
@@ -88,7 +88,7 @@ export default function SettingsPage() {
       <div className="flex border-b border-line mb-6 gap-6">
         <button
           onClick={() => setCurrentTab("general")}
-          className={cn(
+          className={clsx(
             "pb-3 text-sm font-bold border-b-2 transition-colors",
             currentTab === "general" ? "border-transparent text-primary" : "border-transparent text-muted hover:text-ink"
           )}
@@ -104,7 +104,7 @@ export default function SettingsPage() {
         </button>
         <button
           onClick={() => setCurrentTab("categories")}
-          className={cn(
+          className={clsx(
             "pb-3 text-sm font-bold border-b-2 transition-colors",
             currentTab === "categories" ? "border-transparent text-primary" : "border-transparent text-muted hover:text-ink"
           )}
@@ -120,7 +120,7 @@ export default function SettingsPage() {
         </button>
         <button
           onClick={() => setCurrentTab("accounts")}
-          className={cn(
+          className={clsx(
             "pb-3 text-sm font-bold border-b-2 transition-colors",
             currentTab === "accounts" ? "border-transparent text-primary" : "border-transparent text-muted hover:text-ink"
           )}
@@ -174,7 +174,7 @@ export default function SettingsPage() {
                       <button
                         key={t}
                         onClick={() => setTheme(t)}
-                        className={cn(
+                        className={clsx(
                           "flex flex-1 items-center justify-center gap-2 rounded-lg py-1.5 text-xs font-bold capitalize transition-colors",
                           theme === t ? "bg-primary text-white" : "text-muted hover:text-ink"
                         )}
@@ -213,13 +213,13 @@ export default function SettingsPage() {
                   </div>
                   <button
                     onClick={() => setNotif((s) => ({ ...s, [n.key]: !s[n.key] }))}
-                    className={cn(
+                    className={clsx(
                       "relative h-6 w-11 rounded-pill transition-colors shrink-0",
                       notif[n.key] ? "bg-primary" : "bg-line"
                     )}
                     aria-pressed={notif[n.key]}
                   >
-                    <span className={cn("absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform", notif[n.key] ? "translate-x-5" : "")} />
+                    <span className={clsx("absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform", notif[n.key] ? "translate-x-5" : "")} />
                   </button>
                 </div>
               ))}

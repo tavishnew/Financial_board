@@ -1,31 +1,41 @@
-﻿"use client";
+"use client";
 
 import { CATEGORY_META } from "@/lib/categories";
-import type { CategoryKey } from "@/lib/types";
-import { cn } from "@/lib/cn";
+import { clsx } from "clsx";
+import type { CategoryKey } from "@/lib/categories";
 
-export function CategoryBadge({
-  categoryKey,
-  showLabel = true,
-  className,
-}: {
-  categoryKey: CategoryKey;
-  showLabel?: boolean;
-  className?: string;
-}) {
-  const meta = CATEGORY_META[categoryKey];
-  const Icon = meta.icon;
+interface CategoryBadgeProps {
+  categoryKey?: CategoryKey;
+  categoryId?: string;
+  categories?: { id: string; key: string; name: string }[];
+  size?: "sm" | "md";
+}
+
+export function CategoryBadge({ categoryKey, categoryId, categories, size = "md" }: CategoryBadgeProps) {
+  let key: CategoryKey | undefined = categoryKey;
+  
+  if (!key) {
+    if (!categoryId || !categories) return null;
+    const cat = categories.find((c) => c.id === categoryId);
+    if (!cat) return null;
+    key = cat.key as CategoryKey;
+  }
+  
+  if (!key) return null;
+  const meta = CATEGORY_META[key];
+  if (!meta) return null;
+
   return (
     <span
-      className={cn(
-        "inline-flex items-center gap-1.5 rounded-pill px-2.5 py-1 text-xs font-semibold",
-        className
+      className={clsx(
+        "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium",
+        size === "sm" && "px-1.5 py-0",
+        size === "md" && "px-2 py-0.5"
       )}
-      style={{ background: `color-mix(in oklch, ${meta.hue} 16%, transparent)`, color: meta.hue }}
+      style={{ backgroundColor: meta.hue, color: "white" }}
     >
-      <Icon size={14} strokeWidth={2.4} />
-      {showLabel && <span>{meta.name}</span>}
+      <meta.icon className="h-3 w-3" />
+      {meta.name}
     </span>
   );
 }
-

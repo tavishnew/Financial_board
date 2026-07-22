@@ -2,7 +2,7 @@
 
 import { type LucideIcon } from "lucide-react";
 import { CountUp } from "./CountUp";
-import { cn } from "@/lib/cn";
+import clsx from "clsx";
 
 interface StatCardProps {
   label: string;
@@ -41,7 +41,7 @@ export function StatCard({
       </div>
       <div>
         <div
-          className={cn(
+          className={clsx(
             "display tabnum text-ink",
             hero ? "text-[clamp(2.25rem,5vw,3.4rem)]" : "text-[clamp(1.6rem,3vw,2.25rem)]"
           )}
@@ -51,7 +51,7 @@ export function StatCard({
         {delta !== undefined && (
           <div className="mt-1 flex items-center gap-1.5 text-sm">
             <span
-              className={cn(
+              className={clsx(
                 "tabnum font-semibold",
                 positive ? "text-primary" : "text-[color:var(--c-bills)]"
               )}

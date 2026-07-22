@@ -11,7 +11,7 @@ import { useStore } from "@/lib/store";
 import { useToast } from "@/components/Toast";
 import { CATEGORY_META } from "@/lib/categories";
 import { formatDate, formatMoney } from "@/lib/format";
-import { cn } from "@/lib/cn";
+import clsx from "clsx";
 import type { TxnType } from "@/lib/types";
 
 const PAGE = 12;
@@ -219,7 +219,7 @@ export default function TransactionsPage() {
             <div className="text-xs font-bold text-muted uppercase tracking-wider flex items-center gap-1">
               <ArrowRightLeft size={14} className="text-primary" /> Net Cash Flow
             </div>
-            <div className={cn("display tabnum text-xl mt-1 font-bold", monthlySummary.net >= 0 ? "text-primary" : "text-danger")}>
+            <div className={clsx("display tabnum text-xl mt-1 font-bold", monthlySummary.net >= 0 ? "text-primary" : "text-danger")}>
               {formatMoney(monthlySummary.net, user.currency)}
             </div>
           </div>
@@ -245,7 +245,7 @@ export default function TransactionsPage() {
               <button
                 key={t}
                 onClick={() => setType(t)}
-                className={cn(
+                className={clsx(
                   "rounded-pill px-3 py-1 text-xs font-bold capitalize transition-colors",
                   type === t ? "bg-primary text-white" : "text-muted hover:text-ink"
                 )}
@@ -311,7 +311,7 @@ export default function TransactionsPage() {
                   <button
                     onClick={toggleSelectAll}
                     aria-label="Select all matching"
-                    className={cn(
+                    className={clsx(
                       "grid h-5 w-5 place-items-center rounded-md border mx-auto transition-colors",
                       allSelected ? "border-primary bg-primary text-white" : "border-line"
                     )}
@@ -358,13 +358,13 @@ export default function TransactionsPage() {
                   const meta = cat ? CATEGORY_META[cat.key] : null;
                   const Icon = meta?.icon ?? HelpCircle;
                   return (
-                    <tr key={t.id} className={cn("hover:bg-slate-50/50 transition-colors", isExpanded && "bg-slate-50")}>
+                    <tr key={t.id} className={clsx("hover:bg-slate-50/50 transition-colors", isExpanded && "bg-slate-50")}>
                       {/* Checkbox */}
                       <td className="py-4 text-center border-b border-line pl-4">
                         <button
                           onClick={() => toggle(t.id)}
                           aria-label="Select row"
-                          className={cn(
+                          className={clsx(
                             "grid h-5 w-5 place-items-center rounded-md border mx-auto transition-colors",
                             selected.has(t.id) ? "border-primary bg-primary text-white" : "border-line"
                           )}

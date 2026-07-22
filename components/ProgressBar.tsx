@@ -1,7 +1,7 @@
-﻿"use client";
+"use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { cn } from "@/lib/cn";
+import clsx from "clsx";
 
 export function ProgressBar({
   value,
@@ -20,7 +20,7 @@ export function ProgressBar({
   const fill = over ? "var(--c-bills)" : hue;
   return (
     <div
-      className={cn("w-full overflow-hidden rounded-full bg-surface-2", className)}
+      className={clsx("w-full overflow-hidden rounded-full bg-surface-2", className)}
       style={{ height }}
       role="progressbar"
       aria-valuenow={Math.round(clamped)}

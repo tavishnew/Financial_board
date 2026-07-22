@@ -10,6 +10,8 @@ import {
 } from "lucide-react";
 import type { CategoryKey } from "./types";
 
+export type { CategoryKey };
+
 export interface CategoryMeta {
   name: string;
   colorVar: string;

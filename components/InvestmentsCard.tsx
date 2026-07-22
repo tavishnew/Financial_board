@@ -24,7 +24,7 @@ import { ProgressBar } from "@/components/ProgressBar";
 import { CountUp } from "@/components/CountUp";
 import { Sparkline } from "@/components/Sparkline";
 import { EmptyState } from "@/components/EmptyState";
-import { cn } from "@/lib/cn";
+import clsx from "clsx";
 
 // Distinct hues for allocation bars / sparklines, cycling per holding.
 const HUES = [
@@ -235,7 +235,7 @@ function SourceBadge({
       title={isReal ? "Live data via Finnhub" : "Simulated market data (no API key)"}
     >
       <span
-        className={cn("h-2 w-2 rounded-full", (live || connecting) && "animate-pulse")}
+        className={clsx("h-2 w-2 rounded-full", (live || connecting) && "animate-pulse")}
         style={{ background: hue }}
       />
       {connecting ? "Connecting" : isReal ? "Live · Finnhub" : "Simulated"}
@@ -274,12 +274,12 @@ function SummaryTile({
           <Icon size={15} strokeWidth={2.4} />
         </span>
       </div>
-      <div className={cn("display tabnum mt-2 text-ink", hero ? "text-[clamp(1.7rem,3vw,2.25rem)]" : "text-2xl")}>
+      <div className={clsx("display tabnum mt-2 text-ink", hero ? "text-[clamp(1.7rem,3vw,2.25rem)]" : "text-2xl")}>
         <CountUp value={value} format={format} />
       </div>
       {delta !== undefined && (
         <div className="mt-1 flex items-center gap-1 text-sm">
-          <span className={cn("tabnum font-semibold", positive ? "text-primary" : "text-[color:var(--c-bills)]")}>
+          <span className={clsx("tabnum font-semibold", positive ? "text-primary" : "text-[color:var(--c-bills)]")}>
             {positive ? <ArrowUpRight size={14} className="inline" /> : <ArrowDownRight size={14} className="inline" />}{" "}
             {Math.abs(delta).toFixed(1)}%
           </span>
@@ -336,7 +336,7 @@ function HoldingRow({
           <div className="display tabnum text-sm font-bold text-ink">
             {quote ? usd2(quote.price) : "—"}
           </div>
-          <div className={cn("tabnum text-xs font-semibold", up ? "text-primary" : "text-[color:var(--c-bills)]")}>
+          <div className={clsx("tabnum text-xs font-semibold", up ? "text-primary" : "text-[color:var(--c-bills)]")}>
             {quote ? `${up ? "▲" : "▼"} ${Math.abs(quote.changePct).toFixed(2)}%` : ""}
           </div>
         </div>
@@ -347,7 +347,7 @@ function HoldingRow({
 
         <div className="text-right">
           <div className="display tabnum text-sm font-bold text-ink">{usd(item.marketValue)}</div>
-          <div className={cn("tabnum text-xs font-semibold", item.gain >= 0 ? "text-primary" : "text-[color:var(--c-bills)]")}>
+          <div className={clsx("tabnum text-xs font-semibold", item.gain >= 0 ? "text-primary" : "text-[color:var(--c-bills)]")}>
             {item.gain >= 0 ? "▲" : "▼"} {signedUSD(item.gain)}
           </div>
         </div>
@@ -420,13 +420,13 @@ function TradePanel({
         <div className="flex rounded-lg border border-line p-0.5">
           <button
             onClick={() => setType("buy")}
-            className={cn("rounded-md px-3 py-1 text-xs font-semibold", type === "buy" ? "bg-primary text-white" : "text-muted")}
+            className={clsx("rounded-md px-3 py-1 text-xs font-semibold", type === "buy" ? "bg-primary text-white" : "text-muted")}
           >
             Buy
           </button>
           <button
             onClick={() => setType("sell")}
-            className={cn("rounded-md px-3 py-1 text-xs font-semibold", type === "sell" ? "bg-[color:var(--c-bills)] text-white" : "text-muted")}
+            className={clsx("rounded-md px-3 py-1 text-xs font-semibold", type === "sell" ? "bg-[color:var(--c-bills)] text-white" : "text-muted")}
           >
             Sell
           </button>

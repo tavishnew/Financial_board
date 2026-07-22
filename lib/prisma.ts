@@ -1,39 +1,43 @@
-import { PrismaClient } from "@prisma/client";
 import { PGlite } from "@electric-sql/pglite";
 import { PrismaPGlite } from "pglite-prisma-adapter";
+import { PrismaClient } from "@prisma/client";
 
-const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined;
+  pglite: PGlite | undefined;
+};
 
-// Neon / any real Postgres URL -> standard Prisma client (prod).
-function isNeon(): boolean {
-  const url = process.env.DATABASE_URL ?? "";
-  return url.startsWith("postgresql://") || url.startsWith("postgres://");
-}
+function createPrismaClient() {
+  const databaseUrl = process.env.DATABASE_URL;
 
-// Local dev uses PGlite (zero-config, embedded Postgres). DATABASE_URL, when
-// set to a non-URL path, is treated as the on-disk location; otherwise we
-// default to ./.finboard-data. Tables are created by scripts/setup-db.mjs.
-function pglitePath(): string {
-  const url = process.env.DATABASE_URL ?? "";
-  if (isNeon()) return "";
-  if (url && !url.includes("://")) return url;
-  return ".finboard-data";
-}
-
-function createClient(): PrismaClient {
-  if (isNeon()) {
+  // Local PGlite (no "://") -> use embedded PGlite with adapter
+  if (databaseUrl && !databaseUrl.includes("://")) {
+    const pglite = globalForPrisma.pglite ?? new PGlite(databaseUrl);
+    if (process.env.NODE_ENV !== "production") globalForPrisma.pglite = pglite;
+    const adapter = new PrismaPGlite(pglite);
     return new PrismaClient({
-      log: process.env.NODE_ENV === "development" ? ["warn", "error"] : ["error"],
+      adapter,
+      log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
     });
   }
-  const pglite = new PGlite(pglitePath());
+
+  // PostgreSQL URL (postgresql:// or postgres://) -> standard Prisma client
+  if (databaseUrl?.startsWith("postgres")) {
+    const prisma = globalForPrisma.prisma ?? new PrismaClient({
+      log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
+    });
+    if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+    return prisma;
+  }
+
+  // Default: PGlite at ./.finboard-data
+  const pglite = globalForPrisma.pglite ?? new PGlite("./.finboard-data");
+  if (process.env.NODE_ENV !== "production") globalForPrisma.pglite = pglite;
   const adapter = new PrismaPGlite(pglite);
   return new PrismaClient({
     adapter,
-    log: process.env.NODE_ENV === "development" ? ["warn", "error"] : ["error"],
+    log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
   });
 }
 
-export const prisma = globalForPrisma.prisma ?? createClient();
-
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+export const prisma = createPrismaClient();

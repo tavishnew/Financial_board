@@ -69,8 +69,8 @@ export default function DashboardPage() {
                   â–² {savingsRate}% saved this month
                 </span>
               </div>
-              <div className="display tabnum mt-3 text-[clamp(2.5rem,5vw,3.75rem)] text-ink leading-none">
-                <CountUp value={nw} format={(n) => formatMoney(n, user.currency)} />
+              <div className="display tabnum mt-3 text-[clamp(2.5rem,5vw,3.75rem)] leading-none">
+                <CountUp value={nw} format={(n) => formatMoney(n, user.currency)} className={nw >= 0 ? "text-primary" : "text-[#DC2626]"} />
               </div>
               <div className="mt-2 text-sm text-muted">
                 Across {accounts.filter((a) => !a.archived).length} active financial accounts

@@ -1,32 +1,32 @@
-﻿// Simple in-memory rate limiter for API routes
-// In production, replace with Redis-based limiter (e.g., @upstash/ratelimit)
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 
-const WINDOW_MS = 60 * 1000; // 1 minute
-const MAX_REQUESTS = 5; // 5 requests per minute per IP
+const WINDOW_MS = 60_000; // 1 minute
+const MAX_REQUESTS = 20; // 20 requests per minute
 
-const requests = new Map<string, { count: number; resetAt: number }>();
-
-export function rateLimit(ip: string): { allowed: boolean; remaining: number; resetAt: number } {
+export function rateLimit(key: string) {
   const now = Date.now();
-  const entry = requests.get(ip);
+  const record = rateLimitMap.get(key);
   
-  if (!entry || now > entry.resetAt) {
-    requests.set(ip, { count: 1, resetAt: now + WINDOW_MS });
+  if (!record || now > record.resetAt) {
+    // First request or window expired
+    rateLimitMap.set(key, { count: 1, resetAt: now + WINDOW_MS });
     return { allowed: true, remaining: MAX_REQUESTS - 1, resetAt: now + WINDOW_MS };
   }
   
-  if (entry.count >= MAX_REQUESTS) {
-    return { allowed: false, remaining: 0, resetAt: entry.resetAt };
+  if (record.count >= MAX_REQUESTS) {
+    return { allowed: false, remaining: 0, resetAt: record.resetAt };
   }
   
-  entry.count++;
-  return { allowed: true, remaining: MAX_REQUESTS - entry.count, resetAt: entry.resetAt };
+  record.count++;
+  return { allowed: true, remaining: MAX_REQUESTS - record.count, resetAt: record.resetAt };
 }
 
-// Cleanup old entries periodically
+// Periodic cleanup to prevent memory leak
 setInterval(() => {
   const now = Date.now();
-  for (const [ip, entry] of requests.entries()) {
-    if (now > entry.resetAt) requests.delete(ip);
+  for (const [key, record] of rateLimitMap.entries()) {
+    if (now > record.resetAt) {
+      rateLimitMap.delete(key);
+    }
   }
-}, WINDOW_MS);
+}, 5 * 60 * 1000);
